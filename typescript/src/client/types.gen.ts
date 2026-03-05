@@ -3852,6 +3852,7 @@ export type ListStacksData = {
     body?: never;
     path?: never;
     query?: {
+        status?: 'queued' | 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'pending_approval';
         page?: number;
         per_page?: number;
     };

@@ -6,16 +6,24 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.console_open_api_stack_list import ConsoleOpenAPIStackList
+from ...models.list_stacks_status import ListStacksStatus
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     *,
+    status: ListStacksStatus | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
+
+    json_status: str | Unset = UNSET
+    if not isinstance(status, Unset):
+        json_status = status.value
+
+    params["status"] = json_status
 
     params["page"] = page
 
@@ -60,11 +68,13 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
+    status: ListStacksStatus | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> Response[ConsoleOpenAPIStackList]:
     """
     Args:
+        status (ListStacksStatus | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -77,6 +87,7 @@ def sync_detailed(
     """
 
     kwargs = _get_kwargs(
+        status=status,
         page=page,
         per_page=per_page,
     )
@@ -91,11 +102,13 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient | Client,
+    status: ListStacksStatus | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> ConsoleOpenAPIStackList | None:
     """
     Args:
+        status (ListStacksStatus | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -109,6 +122,7 @@ def sync(
 
     return sync_detailed(
         client=client,
+        status=status,
         page=page,
         per_page=per_page,
     ).parsed
@@ -117,11 +131,13 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
+    status: ListStacksStatus | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> Response[ConsoleOpenAPIStackList]:
     """
     Args:
+        status (ListStacksStatus | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -134,6 +150,7 @@ async def asyncio_detailed(
     """
 
     kwargs = _get_kwargs(
+        status=status,
         page=page,
         per_page=per_page,
     )
@@ -146,11 +163,13 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
+    status: ListStacksStatus | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> ConsoleOpenAPIStackList | None:
     """
     Args:
+        status (ListStacksStatus | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -165,6 +184,7 @@ async def asyncio(
     return (
         await asyncio_detailed(
             client=client,
+            status=status,
             page=page,
             per_page=per_page,
         )

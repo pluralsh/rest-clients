@@ -86,6 +86,7 @@ from .list_clusters_compliance import ListClustersCompliance
 from .list_git_repositories_health import ListGitRepositoriesHealth
 from .list_helm_repositories_health import ListHelmRepositoriesHealth
 from .list_sentinels_status import ListSentinelsStatus
+from .list_stacks_status import ListStacksStatus
 from .pipeline import Pipeline
 from .pipeline_context import PipelineContext
 from .pipeline_context_context import PipelineContextContext
@@ -238,6 +239,7 @@ __all__ = (
     "ListGitRepositoriesHealth",
     "ListHelmRepositoriesHealth",
     "ListSentinelsStatus",
+    "ListStacksStatus",
     "Pipeline",
     "PipelineContext",
     "PipelineContextContext",
