@@ -377,6 +377,17 @@ const (
 	ListHelmRepositoriesParamsHealthPullable ListHelmRepositoriesParamsHealth = "pullable"
 )
 
+// Defines values for ListStacksParamsStatus.
+const (
+	Cancelled       ListStacksParamsStatus = "cancelled"
+	Failed          ListStacksParamsStatus = "failed"
+	Pending         ListStacksParamsStatus = "pending"
+	PendingApproval ListStacksParamsStatus = "pending_approval"
+	Queued          ListStacksParamsStatus = "queued"
+	Running         ListStacksParamsStatus = "running"
+	Successful      ListStacksParamsStatus = "successful"
+)
+
 // AccessToken An access token
 type AccessToken struct {
 	ExpiresAt  *time.Time                        `json:"expires_at,omitempty"`
@@ -2438,9 +2449,13 @@ type CreateServiceAccountAccessTokenParams struct {
 
 // ListStacksParams defines parameters for ListStacks.
 type ListStacksParams struct {
-	Page    *int `form:"page,omitempty" json:"page,omitempty"`
-	PerPage *int `form:"per_page,omitempty" json:"per_page,omitempty"`
+	Status  *ListStacksParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+	Page    *int                    `form:"page,omitempty" json:"page,omitempty"`
+	PerPage *int                    `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
+
+// ListStacksParamsStatus defines parameters for ListStacks.
+type ListStacksParamsStatus string
 
 // DeleteStackParams defines parameters for DeleteStack.
 type DeleteStackParams struct {
@@ -8143,6 +8158,22 @@ func NewListStacksRequest(server string, params *ListStacksParams) (*http.Reques
 
 	if params != nil {
 		queryValues := queryURL.Query()
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "status", runtime.ParamLocationQuery, *params.Status); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
 
 		if params.Page != nil {
 
