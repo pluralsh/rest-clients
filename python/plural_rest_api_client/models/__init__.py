@@ -151,6 +151,9 @@ from .workbench import Workbench
 from .workbench_job import WorkbenchJob
 from .workbench_job_input import WorkbenchJobInput
 from .workbench_job_result import WorkbenchJobResult
+from .workbench_job_result_metadata import WorkbenchJobResultMetadata
+from .workbench_job_result_metric import WorkbenchJobResultMetric
+from .workbench_job_result_metric_labels import WorkbenchJobResultMetricLabels
 from .workbench_job_result_todo import WorkbenchJobResultTodo
 from .workbench_job_status import WorkbenchJobStatus
 
@@ -304,6 +307,9 @@ __all__ = (
     "WorkbenchJob",
     "WorkbenchJobInput",
     "WorkbenchJobResult",
+    "WorkbenchJobResultMetadata",
+    "WorkbenchJobResultMetric",
+    "WorkbenchJobResultMetricLabels",
     "WorkbenchJobResultTodo",
     "WorkbenchJobStatus",
 )

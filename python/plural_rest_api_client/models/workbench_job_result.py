@@ -11,6 +11,7 @@ from dateutil.parser import isoparse
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+    from ..models.workbench_job_result_metadata import WorkbenchJobResultMetadata
     from ..models.workbench_job_result_todo import WorkbenchJobResultTodo
 
 
@@ -19,12 +20,13 @@ T = TypeVar("T", bound="WorkbenchJobResult")
 
 @_attrs_define
 class WorkbenchJobResult:
-    """The result of a workbench job run (working theory, conclusion, todos)
+    """The result of a workbench job run (working theory, conclusion, todos, metadata)
 
     Attributes:
         conclusion (str | Unset): The conclusion for this result
         id (str | Unset): Unique identifier for the result
         inserted_at (datetime.datetime | Unset):
+        metadata (WorkbenchJobResultMetadata | Unset): Metadata associated with a workbench job result
         todos (list[WorkbenchJobResultTodo] | Unset): Todos for this result
         updated_at (datetime.datetime | Unset):
         workbench_job_id (str | Unset): ID of the job this result belongs to
@@ -34,6 +36,7 @@ class WorkbenchJobResult:
     conclusion: str | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
+    metadata: WorkbenchJobResultMetadata | Unset = UNSET
     todos: list[WorkbenchJobResultTodo] | Unset = UNSET
     updated_at: datetime.datetime | Unset = UNSET
     workbench_job_id: str | Unset = UNSET
@@ -48,6 +51,10 @@ class WorkbenchJobResult:
         inserted_at: str | Unset = UNSET
         if not isinstance(self.inserted_at, Unset):
             inserted_at = self.inserted_at.isoformat()
+
+        metadata: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.metadata, Unset):
+            metadata = self.metadata.to_dict()
 
         todos: list[dict[str, Any]] | Unset = UNSET
         if not isinstance(self.todos, Unset):
@@ -73,6 +80,8 @@ class WorkbenchJobResult:
             field_dict["id"] = id
         if inserted_at is not UNSET:
             field_dict["inserted_at"] = inserted_at
+        if metadata is not UNSET:
+            field_dict["metadata"] = metadata
         if todos is not UNSET:
             field_dict["todos"] = todos
         if updated_at is not UNSET:
@@ -86,6 +95,7 @@ class WorkbenchJobResult:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.workbench_job_result_metadata import WorkbenchJobResultMetadata
         from ..models.workbench_job_result_todo import WorkbenchJobResultTodo
 
         d = dict(src_dict)
@@ -99,6 +109,13 @@ class WorkbenchJobResult:
             inserted_at = UNSET
         else:
             inserted_at = isoparse(_inserted_at)
+
+        _metadata = d.pop("metadata", UNSET)
+        metadata: WorkbenchJobResultMetadata | Unset
+        if isinstance(_metadata, Unset):
+            metadata = UNSET
+        else:
+            metadata = WorkbenchJobResultMetadata.from_dict(_metadata)
 
         _todos = d.pop("todos", UNSET)
         todos: list[WorkbenchJobResultTodo] | Unset = UNSET
@@ -124,6 +141,7 @@ class WorkbenchJobResult:
             conclusion=conclusion,
             id=id,
             inserted_at=inserted_at,
+            metadata=metadata,
             todos=todos,
             updated_at=updated_at,
             workbench_job_id=workbench_job_id,
