@@ -2436,7 +2436,7 @@ export type WorkbenchJobInput = {
 /**
  * WorkbenchJobResult
  *
- * The result of a workbench job run (working theory, conclusion, todos)
+ * The result of a workbench job run (working theory, conclusion, todos, metadata)
  */
 export type WorkbenchJobResult = {
     /**
@@ -2448,6 +2448,7 @@ export type WorkbenchJobResult = {
      */
     id?: string;
     inserted_at?: string;
+    metadata?: WorkbenchJobResultMetadata;
     /**
      * Todos for this result
      */
@@ -2461,6 +2462,44 @@ export type WorkbenchJobResult = {
      * The working theory for this result
      */
     working_theory?: string;
+};
+
+/**
+ * WorkbenchJobResultMetadata
+ *
+ * Metadata associated with a workbench job result
+ */
+export type WorkbenchJobResultMetadata = {
+    /**
+     * Metrics for this result
+     */
+    metrics?: Array<WorkbenchJobResultMetric>;
+};
+
+/**
+ * WorkbenchJobResultMetric
+ *
+ * A metric persisted on the job result
+ */
+export type WorkbenchJobResultMetric = {
+    /**
+     * Labels for the metric
+     */
+    labels?: {
+        [key: string]: string;
+    };
+    /**
+     * Name of the metric
+     */
+    name?: string;
+    /**
+     * ISO 8601 timestamp of the metric
+     */
+    timestamp?: string;
+    /**
+     * Value of the metric
+     */
+    value?: number;
 };
 
 /**

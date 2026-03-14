@@ -28,7 +28,8 @@ class WorkbenchJob:
         id (str | Unset): Unique identifier for the job
         inserted_at (datetime.datetime | Unset):
         prompt (str | Unset): The prompt for this run
-        result (WorkbenchJobResult | Unset): The result of a workbench job run (working theory, conclusion, todos)
+        result (WorkbenchJobResult | Unset): The result of a workbench job run (working theory, conclusion, todos,
+            metadata)
         started_at (datetime.datetime | Unset): When the run started
         status (WorkbenchJobStatus | Unset): Current status (pending, running, successful, failed, cancelled)
         updated_at (datetime.datetime | Unset):

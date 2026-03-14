@@ -2179,7 +2179,7 @@ type WorkbenchJob struct {
 	// Prompt The prompt for this run
 	Prompt *string `json:"prompt,omitempty"`
 
-	// Result The result of a workbench job run (working theory, conclusion, todos)
+	// Result The result of a workbench job run (working theory, conclusion, todos, metadata)
 	Result *WorkbenchJobResult `json:"result,omitempty"`
 
 	// StartedAt When the run started
@@ -2205,7 +2205,7 @@ type WorkbenchJobInput struct {
 	Prompt string `json:"prompt"`
 }
 
-// WorkbenchJobResult The result of a workbench job run (working theory, conclusion, todos)
+// WorkbenchJobResult The result of a workbench job run (working theory, conclusion, todos, metadata)
 type WorkbenchJobResult struct {
 	// Conclusion The conclusion for this result
 	Conclusion *string `json:"conclusion,omitempty"`
@@ -2213,6 +2213,9 @@ type WorkbenchJobResult struct {
 	// Id Unique identifier for the result
 	Id         *string    `json:"id,omitempty"`
 	InsertedAt *time.Time `json:"inserted_at,omitempty"`
+
+	// Metadata Metadata associated with a workbench job result
+	Metadata *WorkbenchJobResultMetadata `json:"metadata,omitempty"`
 
 	// Todos Todos for this result
 	Todos     *[]WorkbenchJobResultTodo `json:"todos,omitempty"`
@@ -2223,6 +2226,27 @@ type WorkbenchJobResult struct {
 
 	// WorkingTheory The working theory for this result
 	WorkingTheory *string `json:"working_theory,omitempty"`
+}
+
+// WorkbenchJobResultMetadata Metadata associated with a workbench job result
+type WorkbenchJobResultMetadata struct {
+	// Metrics Metrics for this result
+	Metrics *[]WorkbenchJobResultMetric `json:"metrics,omitempty"`
+}
+
+// WorkbenchJobResultMetric A metric persisted on the job result
+type WorkbenchJobResultMetric struct {
+	// Labels Labels for the metric
+	Labels *map[string]string `json:"labels,omitempty"`
+
+	// Name Name of the metric
+	Name *string `json:"name,omitempty"`
+
+	// Timestamp ISO 8601 timestamp of the metric
+	Timestamp *string `json:"timestamp,omitempty"`
+
+	// Value Value of the metric
+	Value *float32 `json:"value,omitempty"`
 }
 
 // WorkbenchJobResultTodo A todo item on the job result
