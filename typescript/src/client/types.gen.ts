@@ -230,7 +230,7 @@ export type AgentSession = {
     /**
      * Type of agent session (terraform, kubernetes, provisioning, search, manifests, chat, research)
      */
-    type?: 'terraform' | 'kubernetes' | 'provisioning' | 'search' | 'manifests' | 'chat' | 'research';
+    type?: 'terraform' | 'kubernetes' | 'provisioning' | 'search' | 'manifests' | 'chat' | 'research' | 'configure';
     updated_at?: string;
 };
 

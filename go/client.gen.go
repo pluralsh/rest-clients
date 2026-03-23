@@ -64,6 +64,7 @@ const (
 // Defines values for AgentSessionType.
 const (
 	AgentSessionTypeChat         AgentSessionType = "chat"
+	AgentSessionTypeConfigure    AgentSessionType = "configure"
 	AgentSessionTypeKubernetes   AgentSessionType = "kubernetes"
 	AgentSessionTypeManifests    AgentSessionType = "manifests"
 	AgentSessionTypeProvisioning AgentSessionType = "provisioning"
