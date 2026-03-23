@@ -3,6 +3,7 @@ from enum import Enum
 
 class AgentSessionType(str, Enum):
     CHAT = "chat"
+    CONFIGURE = "configure"
     KUBERNETES = "kubernetes"
     MANIFESTS = "manifests"
     PROVISIONING = "provisioning"
