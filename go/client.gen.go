@@ -39,11 +39,12 @@ const (
 
 // Defines values for AgentRunStatus.
 const (
-	AgentRunStatusCancelled  AgentRunStatus = "cancelled"
-	AgentRunStatusFailed     AgentRunStatus = "failed"
-	AgentRunStatusPending    AgentRunStatus = "pending"
-	AgentRunStatusRunning    AgentRunStatus = "running"
-	AgentRunStatusSuccessful AgentRunStatus = "successful"
+	AgentRunStatusBabysitting AgentRunStatus = "babysitting"
+	AgentRunStatusCancelled   AgentRunStatus = "cancelled"
+	AgentRunStatusFailed      AgentRunStatus = "failed"
+	AgentRunStatusPending     AgentRunStatus = "pending"
+	AgentRunStatusRunning     AgentRunStatus = "running"
+	AgentRunStatusSuccessful  AgentRunStatus = "successful"
 )
 
 // Defines values for AgentRunInputMode.
