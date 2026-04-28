@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class AgentRunStatus(str, Enum):
+    BABYSITTING = "babysitting"
     CANCELLED = "cancelled"
     FAILED = "failed"
     PENDING = "pending"

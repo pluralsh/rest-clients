@@ -86,7 +86,7 @@ export type AgentRun = {
     /**
      * Current status of the agent run (pending, running, successful, failed, cancelled)
      */
-    status?: 'pending' | 'running' | 'successful' | 'failed' | 'cancelled';
+    status?: 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'babysitting';
     updated_at?: string;
     /**
      * ID of the user who initiated this agent run
