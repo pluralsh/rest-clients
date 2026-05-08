@@ -2409,7 +2409,7 @@ export type WorkbenchJob = {
     /**
      * Current status (pending, running, successful, failed, cancelled)
      */
-    status?: 'pending' | 'running' | 'successful' | 'failed' | 'cancelled';
+    status?: 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'paused';
     updated_at?: string;
     /**
      * ID of the user who created this run
