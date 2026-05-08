@@ -340,6 +340,7 @@ const (
 const (
 	WorkbenchJobStatusCancelled  WorkbenchJobStatus = "cancelled"
 	WorkbenchJobStatusFailed     WorkbenchJobStatus = "failed"
+	WorkbenchJobStatusPaused     WorkbenchJobStatus = "paused"
 	WorkbenchJobStatusPending    WorkbenchJobStatus = "pending"
 	WorkbenchJobStatusRunning    WorkbenchJobStatus = "running"
 	WorkbenchJobStatusSuccessful WorkbenchJobStatus = "successful"
