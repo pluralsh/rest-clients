@@ -24,6 +24,8 @@ class WorkbenchJobResult:
 
     Attributes:
         conclusion (str | Unset): The conclusion for this result
+        criticism (str | Unset): Markdown-formatted critique of the work done so far, highlighting gaps,
+            inconsistencies, and weaknesses in the current investigation
         id (str | Unset): Unique identifier for the result
         inserted_at (datetime.datetime | Unset):
         metadata (WorkbenchJobResultMetadata | Unset): Metadata associated with a workbench job result
@@ -34,6 +36,7 @@ class WorkbenchJobResult:
     """
 
     conclusion: str | Unset = UNSET
+    criticism: str | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
     metadata: WorkbenchJobResultMetadata | Unset = UNSET
@@ -45,6 +48,8 @@ class WorkbenchJobResult:
 
     def to_dict(self) -> dict[str, Any]:
         conclusion = self.conclusion
+
+        criticism = self.criticism
 
         id = self.id
 
@@ -76,6 +81,8 @@ class WorkbenchJobResult:
         field_dict.update({})
         if conclusion is not UNSET:
             field_dict["conclusion"] = conclusion
+        if criticism is not UNSET:
+            field_dict["criticism"] = criticism
         if id is not UNSET:
             field_dict["id"] = id
         if inserted_at is not UNSET:
@@ -100,6 +107,8 @@ class WorkbenchJobResult:
 
         d = dict(src_dict)
         conclusion = d.pop("conclusion", UNSET)
+
+        criticism = d.pop("criticism", UNSET)
 
         id = d.pop("id", UNSET)
 
@@ -139,6 +148,7 @@ class WorkbenchJobResult:
 
         workbench_job_result = cls(
             conclusion=conclusion,
+            criticism=criticism,
             id=id,
             inserted_at=inserted_at,
             metadata=metadata,

@@ -2213,6 +2213,9 @@ type WorkbenchJobResult struct {
 	// Conclusion The conclusion for this result
 	Conclusion *string `json:"conclusion,omitempty"`
 
+	// Criticism Markdown-formatted critique of the work done so far, highlighting gaps, inconsistencies, and weaknesses in the current investigation
+	Criticism *string `json:"criticism,omitempty"`
+
 	// Id Unique identifier for the result
 	Id         *string    `json:"id,omitempty"`
 	InsertedAt *time.Time `json:"inserted_at,omitempty"`

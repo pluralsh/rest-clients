@@ -2444,6 +2444,10 @@ export type WorkbenchJobResult = {
      */
     conclusion?: string;
     /**
+     * Markdown-formatted critique of the work done so far, highlighting gaps, inconsistencies, and weaknesses in the current investigation
+     */
+    criticism?: string;
+    /**
      * Unique identifier for the result
      */
     id?: string;
