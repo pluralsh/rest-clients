@@ -1777,6 +1777,12 @@ type SentinelRunJobFormat string
 // SentinelRunJobStatus Current status of the job (pending, running, success, failed)
 type SentinelRunJobStatus string
 
+// SentinelRunOverridesInput Optional overrides applied when triggering a sentinel run
+type SentinelRunOverridesInput struct {
+	// Tags Tags to merge into integration test checks for this run
+	Tags *map[string]string `json:"tags,omitempty"`
+}
+
 // Service A service deployment reference deployed from a git repo into a cluster
 type Service struct {
 	// ClusterId ID of the cluster this service is deployed to
@@ -2495,6 +2501,9 @@ type DeleteStackParams struct {
 // CreateAgentRunJSONRequestBody defines body for CreateAgentRun for application/json ContentType.
 type CreateAgentRunJSONRequestBody = AgentRunInput
 
+// TriggerSentinelJSONRequestBody defines body for TriggerSentinel for application/json ContentType.
+type TriggerSentinelJSONRequestBody = SentinelRunOverridesInput
+
 // CreateAgentSessionJSONRequestBody defines body for CreateAgentSession for application/json ContentType.
 type CreateAgentSessionJSONRequestBody = AgentSessionInput
 
@@ -2657,8 +2666,10 @@ type ClientInterface interface {
 	// GetSentinel request
 	GetSentinel(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// TriggerSentinel request
-	TriggerSentinel(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// TriggerSentinelWithBody request with any body
+	TriggerSentinelWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	TriggerSentinel(ctx context.Context, id string, body TriggerSentinelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListSentinelRuns request
 	ListSentinelRuns(ctx context.Context, sentinelId string, params *ListSentinelRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3027,8 +3038,20 @@ func (c *Client) GetSentinel(ctx context.Context, id string, reqEditors ...Reque
 	return c.Client.Do(req)
 }
 
-func (c *Client) TriggerSentinel(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewTriggerSentinelRequest(c.Server, id)
+func (c *Client) TriggerSentinelWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerSentinelRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) TriggerSentinel(ctx context.Context, id string, body TriggerSentinelJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTriggerSentinelRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4590,8 +4613,19 @@ func NewGetSentinelRequest(server string, id string) (*http.Request, error) {
 	return req, nil
 }
 
-// NewTriggerSentinelRequest generates requests for TriggerSentinel
-func NewTriggerSentinelRequest(server string, id string) (*http.Request, error) {
+// NewTriggerSentinelRequest calls the generic TriggerSentinel builder with application/json body
+func NewTriggerSentinelRequest(server string, id string, body TriggerSentinelJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewTriggerSentinelRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewTriggerSentinelRequestWithBody generates requests for TriggerSentinel with any type of body
+func NewTriggerSentinelRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -4616,10 +4650,12 @@ func NewTriggerSentinelRequest(server string, id string) (*http.Request, error) 
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -8596,8 +8632,10 @@ type ClientWithResponsesInterface interface {
 	// GetSentinelWithResponse request
 	GetSentinelWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetSentinelResponse, error)
 
-	// TriggerSentinelWithResponse request
-	TriggerSentinelWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*TriggerSentinelResponse, error)
+	// TriggerSentinelWithBodyWithResponse request with any body
+	TriggerSentinelWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerSentinelResponse, error)
+
+	TriggerSentinelWithResponse(ctx context.Context, id string, body TriggerSentinelJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerSentinelResponse, error)
 
 	// ListSentinelRunsWithResponse request
 	ListSentinelRunsWithResponse(ctx context.Context, sentinelId string, params *ListSentinelRunsParams, reqEditors ...RequestEditorFn) (*ListSentinelRunsResponse, error)
@@ -10720,9 +10758,17 @@ func (c *ClientWithResponses) GetSentinelWithResponse(ctx context.Context, id st
 	return ParseGetSentinelResponse(rsp)
 }
 
-// TriggerSentinelWithResponse request returning *TriggerSentinelResponse
-func (c *ClientWithResponses) TriggerSentinelWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*TriggerSentinelResponse, error) {
-	rsp, err := c.TriggerSentinel(ctx, id, reqEditors...)
+// TriggerSentinelWithBodyWithResponse request with arbitrary body returning *TriggerSentinelResponse
+func (c *ClientWithResponses) TriggerSentinelWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TriggerSentinelResponse, error) {
+	rsp, err := c.TriggerSentinelWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTriggerSentinelResponse(rsp)
+}
+
+func (c *ClientWithResponses) TriggerSentinelWithResponse(ctx context.Context, id string, body TriggerSentinelJSONRequestBody, reqEditors ...RequestEditorFn) (*TriggerSentinelResponse, error) {
+	rsp, err := c.TriggerSentinel(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
