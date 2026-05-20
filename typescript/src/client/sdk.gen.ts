@@ -73,7 +73,11 @@ export const getSentinel = <ThrowOnError extends boolean = false>(options: Optio
 export const triggerSentinel = <ThrowOnError extends boolean = false>(options: Options<TriggerSentinelData, ThrowOnError>) => (options.client ?? client).post<TriggerSentinelResponses, unknown, ThrowOnError>({
     responseType: 'json',
     url: '/v1/api/ai/sentinels/{id}/trigger',
-    ...options
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 export const listSentinelRuns = <ThrowOnError extends boolean = false>(options: Options<ListSentinelRunsData, ThrowOnError>) => (options.client ?? client).get<ListSentinelRunsResponses, unknown, ThrowOnError>({

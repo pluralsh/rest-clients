@@ -1908,6 +1908,20 @@ export type SentinelRunJob = {
 };
 
 /**
+ * SentinelRunOverridesInput
+ *
+ * Optional overrides applied when triggering a sentinel run
+ */
+export type SentinelRunOverridesInput = {
+    /**
+     * Tags to merge into integration test checks for this run
+     */
+    tags?: {
+        [key: string]: string;
+    };
+};
+
+/**
  * Service
  *
  * A service deployment reference deployed from a git repo into a cluster
@@ -2676,7 +2690,7 @@ export type GetSentinelResponses = {
 export type GetSentinelResponse = GetSentinelResponses[keyof GetSentinelResponses];
 
 export type TriggerSentinelData = {
-    body?: never;
+    body: SentinelRunOverridesInput;
     path: {
         id: string;
     };

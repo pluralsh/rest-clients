@@ -120,6 +120,8 @@ from .sentinel_run import SentinelRun
 from .sentinel_run_job import SentinelRunJob
 from .sentinel_run_job_format import SentinelRunJobFormat
 from .sentinel_run_job_status import SentinelRunJobStatus
+from .sentinel_run_overrides_input import SentinelRunOverridesInput
+from .sentinel_run_overrides_input_tags import SentinelRunOverridesInputTags
 from .sentinel_run_status import SentinelRunStatus
 from .sentinel_status import SentinelStatus
 from .service import Service
@@ -276,6 +278,8 @@ __all__ = (
     "SentinelRunJob",
     "SentinelRunJobFormat",
     "SentinelRunJobStatus",
+    "SentinelRunOverridesInput",
+    "SentinelRunOverridesInputTags",
     "SentinelRunStatus",
     "SentinelStatus",
     "Service",
