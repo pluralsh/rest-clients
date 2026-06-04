@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.agent_run_language import AgentRunLanguage
 from ..models.agent_run_mode import AgentRunMode
@@ -21,6 +20,8 @@ class AgentRun:
     """An execution of an AI coding agent processing a prompt against a repository
 
     Attributes:
+        approval (bool | Unset): Whether this agent run requires approval before continuing
+        approved_at (datetime.datetime | Unset): When this agent run was approved
         branch (str | Unset): The git branch the agent is operating on (uses default branch if not set)
         error (str | Unset): Error message if the agent run failed
         flow_id (str | Unset): ID of the flow this agent run is associated with, if any
@@ -41,6 +42,8 @@ class AgentRun:
         user_id (str | Unset): ID of the user who initiated this agent run
     """
 
+    approval: bool | Unset = UNSET
+    approved_at: datetime.datetime | Unset = UNSET
     branch: str | Unset = UNSET
     error: str | Unset = UNSET
     flow_id: str | Unset = UNSET
@@ -59,6 +62,12 @@ class AgentRun:
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        approval = self.approval
+
+        approved_at: str | Unset = UNSET
+        if not isinstance(self.approved_at, Unset):
+            approved_at = self.approved_at.isoformat()
+
         branch = self.branch
 
         error = self.error
@@ -102,6 +111,10 @@ class AgentRun:
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
+        if approval is not UNSET:
+            field_dict["approval"] = approval
+        if approved_at is not UNSET:
+            field_dict["approved_at"] = approved_at
         if branch is not UNSET:
             field_dict["branch"] = branch
         if error is not UNSET:
@@ -138,6 +151,15 @@ class AgentRun:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
+        approval = d.pop("approval", UNSET)
+
+        _approved_at = d.pop("approved_at", UNSET)
+        approved_at: datetime.datetime | Unset
+        if isinstance(_approved_at, Unset):
+            approved_at = UNSET
+        else:
+            approved_at = datetime.datetime.fromisoformat(_approved_at)
+
         branch = d.pop("branch", UNSET)
 
         error = d.pop("error", UNSET)
@@ -151,7 +173,7 @@ class AgentRun:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         _language = d.pop("language", UNSET)
         language: AgentRunLanguage | Unset
@@ -189,11 +211,13 @@ class AgentRun:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         user_id = d.pop("user_id", UNSET)
 
         agent_run = cls(
+            approval=approval,
+            approved_at=approved_at,
             branch=branch,
             error=error,
             flow_id=flow_id,

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -97,7 +96,7 @@ class AccessToken:
         d = dict(src_dict)
         id = d.pop("id")
 
-        inserted_at = isoparse(d.pop("inserted_at"))
+        inserted_at = datetime.datetime.fromisoformat(d.pop("inserted_at"))
 
         token = d.pop("token")
 
@@ -106,14 +105,14 @@ class AccessToken:
         if isinstance(_expires_at, Unset):
             expires_at = UNSET
         else:
-            expires_at = isoparse(_expires_at)
+            expires_at = datetime.datetime.fromisoformat(_expires_at)
 
         _last_used_at = d.pop("last_used_at", UNSET)
         last_used_at: datetime.datetime | Unset
         if isinstance(_last_used_at, Unset):
             last_used_at = UNSET
         else:
-            last_used_at = isoparse(_last_used_at)
+            last_used_at = datetime.datetime.fromisoformat(_last_used_at)
 
         _scopes = d.pop("scopes", UNSET)
         scopes: list[ConsoleOpenAPIAccessTokenScope] | Unset = UNSET
@@ -129,7 +128,7 @@ class AccessToken:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         access_token = cls(
             id=id,

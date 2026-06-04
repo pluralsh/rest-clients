@@ -39,12 +39,13 @@ const (
 
 // Defines values for AgentRunStatus.
 const (
-	AgentRunStatusBabysitting AgentRunStatus = "babysitting"
-	AgentRunStatusCancelled   AgentRunStatus = "cancelled"
-	AgentRunStatusFailed      AgentRunStatus = "failed"
-	AgentRunStatusPending     AgentRunStatus = "pending"
-	AgentRunStatusRunning     AgentRunStatus = "running"
-	AgentRunStatusSuccessful  AgentRunStatus = "successful"
+	AgentRunStatusBabysitting     AgentRunStatus = "babysitting"
+	AgentRunStatusCancelled       AgentRunStatus = "cancelled"
+	AgentRunStatusFailed          AgentRunStatus = "failed"
+	AgentRunStatusPending         AgentRunStatus = "pending"
+	AgentRunStatusPendingApproval AgentRunStatus = "pending_approval"
+	AgentRunStatusRunning         AgentRunStatus = "running"
+	AgentRunStatusSuccessful      AgentRunStatus = "successful"
 )
 
 // Defines values for AgentRunInputMode.
@@ -411,6 +412,12 @@ type AccessTokenInput struct {
 
 // AgentRun An execution of an AI coding agent processing a prompt against a repository
 type AgentRun struct {
+	// Approval Whether this agent run requires approval before continuing
+	Approval *bool `json:"approval,omitempty"`
+
+	// ApprovedAt When this agent run was approved
+	ApprovedAt *time.Time `json:"approved_at,omitempty"`
+
 	// Branch The git branch the agent is operating on (uses default branch if not set)
 	Branch *string `json:"branch,omitempty"`
 
@@ -464,6 +471,9 @@ type AgentRunStatus string
 
 // AgentRunInput Input for creating a new agent run to execute an AI coding agent
 type AgentRunInput struct {
+	// Approval Whether this agent run requires approval before continuing
+	Approval *bool `json:"approval,omitempty"`
+
 	// FlowId Optional flow ID to associate this agent run with
 	FlowId *string `json:"flow_id,omitempty"`
 
@@ -2185,6 +2195,9 @@ type WorkbenchJob struct {
 	Id         *string    `json:"id,omitempty"`
 	InsertedAt *time.Time `json:"inserted_at,omitempty"`
 
+	// Modes Mode-specific options for a workbench job
+	Modes *WorkbenchJobModes `json:"modes,omitempty"`
+
 	// Prompt The prompt for this run
 	Prompt *string `json:"prompt,omitempty"`
 
@@ -2208,10 +2221,31 @@ type WorkbenchJob struct {
 // WorkbenchJobStatus Current status (pending, running, successful, failed, cancelled)
 type WorkbenchJobStatus string
 
+// WorkbenchJobCodingModes Coding mode options for a workbench job
+type WorkbenchJobCodingModes struct {
+	// Approval Whether coding agent runs require approval before continuing
+	Approval *bool `json:"approval,omitempty"`
+
+	// Babysit Whether babysit mode is enabled for coding agent runs
+	Babysit *bool `json:"babysit,omitempty"`
+}
+
 // WorkbenchJobInput Input for creating a new workbench job
 type WorkbenchJobInput struct {
+	// Modes Mode-specific options for a workbench job
+	Modes *WorkbenchJobModes `json:"modes,omitempty"`
+
 	// Prompt The prompt for this job
 	Prompt string `json:"prompt"`
+}
+
+// WorkbenchJobModes Mode-specific options for a workbench job
+type WorkbenchJobModes struct {
+	// Coding Coding mode options for a workbench job
+	Coding *WorkbenchJobCodingModes `json:"coding,omitempty"`
+
+	// Plan Whether planning mode is enabled for this job
+	Plan *bool `json:"plan,omitempty"`
 }
 
 // WorkbenchJobResult The result of a workbench job run (working theory, conclusion, todos, metadata)

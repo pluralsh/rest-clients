@@ -6,6 +6,7 @@ class AgentRunStatus(str, Enum):
     CANCELLED = "cancelled"
     FAILED = "failed"
     PENDING = "pending"
+    PENDING_APPROVAL = "pending_approval"
     RUNNING = "running"
     SUCCESSFUL = "successful"
 

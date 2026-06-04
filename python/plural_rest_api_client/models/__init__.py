@@ -151,7 +151,9 @@ from .tag_input import TagInput
 from .user import User
 from .workbench import Workbench
 from .workbench_job import WorkbenchJob
+from .workbench_job_coding_modes import WorkbenchJobCodingModes
 from .workbench_job_input import WorkbenchJobInput
+from .workbench_job_modes import WorkbenchJobModes
 from .workbench_job_result import WorkbenchJobResult
 from .workbench_job_result_metadata import WorkbenchJobResultMetadata
 from .workbench_job_result_metric import WorkbenchJobResultMetric
@@ -309,7 +311,9 @@ __all__ = (
     "User",
     "Workbench",
     "WorkbenchJob",
+    "WorkbenchJobCodingModes",
     "WorkbenchJobInput",
+    "WorkbenchJobModes",
     "WorkbenchJobResult",
     "WorkbenchJobResultMetadata",
     "WorkbenchJobResultMetric",
