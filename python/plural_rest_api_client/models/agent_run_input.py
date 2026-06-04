@@ -21,6 +21,7 @@ class AgentRunInput:
         prompt (str): The prompt to give to the agent describing the task to perform
         repository (str): The git repository URL the agent will work on (https or ssh format)
         runtime_id (str): The runtime ID to execute the agent run on
+        approval (bool | Unset): Whether this agent run requires approval before continuing
         flow_id (str | Unset): Optional flow ID to associate this agent run with
         shared (bool | Unset): Whether to share this agent run publicly
     """
@@ -29,6 +30,7 @@ class AgentRunInput:
     prompt: str
     repository: str
     runtime_id: str
+    approval: bool | Unset = UNSET
     flow_id: str | Unset = UNSET
     shared: bool | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -41,6 +43,8 @@ class AgentRunInput:
         repository = self.repository
 
         runtime_id = self.runtime_id
+
+        approval = self.approval
 
         flow_id = self.flow_id
 
@@ -56,6 +60,8 @@ class AgentRunInput:
                 "runtime_id": runtime_id,
             }
         )
+        if approval is not UNSET:
+            field_dict["approval"] = approval
         if flow_id is not UNSET:
             field_dict["flow_id"] = flow_id
         if shared is not UNSET:
@@ -74,6 +80,8 @@ class AgentRunInput:
 
         runtime_id = d.pop("runtime_id")
 
+        approval = d.pop("approval", UNSET)
+
         flow_id = d.pop("flow_id", UNSET)
 
         shared = d.pop("shared", UNSET)
@@ -83,6 +91,7 @@ class AgentRunInput:
             prompt=prompt,
             repository=repository,
             runtime_id=runtime_id,
+            approval=approval,
             flow_id=flow_id,
             shared=shared,
         )

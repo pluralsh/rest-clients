@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.git_repository_auth_method import GitRepositoryAuthMethod
 from ..models.git_repository_health import GitRepositoryHealth
@@ -129,21 +128,21 @@ class GitRepository:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         _pulled_at = d.pop("pulled_at", UNSET)
         pulled_at: datetime.datetime | Unset
         if isinstance(_pulled_at, Unset):
             pulled_at = UNSET
         else:
-            pulled_at = isoparse(_pulled_at)
+            pulled_at = datetime.datetime.fromisoformat(_pulled_at)
 
         _updated_at = d.pop("updated_at", UNSET)
         updated_at: datetime.datetime | Unset
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         url = d.pop("url", UNSET)
 

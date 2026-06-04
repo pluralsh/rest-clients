@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -101,7 +100,7 @@ class Workbench:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         name = d.pop("name", UNSET)
 
@@ -116,7 +115,7 @@ class Workbench:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         workbench = cls(
             agent_runtime_id=agent_runtime_id,

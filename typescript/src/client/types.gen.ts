@@ -39,6 +39,14 @@ export type AccessTokenInput = {
  */
 export type AgentRun = {
     /**
+     * Whether this agent run requires approval before continuing
+     */
+    approval?: boolean;
+    /**
+     * When this agent run was approved
+     */
+    approved_at?: string;
+    /**
      * The git branch the agent is operating on (uses default branch if not set)
      */
     branch?: string;
@@ -86,7 +94,7 @@ export type AgentRun = {
     /**
      * Current status of the agent run (pending, running, successful, failed, cancelled)
      */
-    status?: 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'babysitting';
+    status?: 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'babysitting' | 'pending_approval';
     updated_at?: string;
     /**
      * ID of the user who initiated this agent run
@@ -100,6 +108,10 @@ export type AgentRun = {
  * Input for creating a new agent run to execute an AI coding agent
  */
 export type AgentRunInput = {
+    /**
+     * Whether this agent run requires approval before continuing
+     */
+    approval?: boolean;
     /**
      * Optional flow ID to associate this agent run with
      */
@@ -2411,6 +2423,7 @@ export type WorkbenchJob = {
      */
     id?: string;
     inserted_at?: string;
+    modes?: WorkbenchJobModes;
     /**
      * The prompt for this run
      */
@@ -2436,15 +2449,45 @@ export type WorkbenchJob = {
 };
 
 /**
+ * WorkbenchJobCodingModes
+ *
+ * Coding mode options for a workbench job
+ */
+export type WorkbenchJobCodingModes = {
+    /**
+     * Whether coding agent runs require approval before continuing
+     */
+    approval?: boolean;
+    /**
+     * Whether babysit mode is enabled for coding agent runs
+     */
+    babysit?: boolean;
+};
+
+/**
  * WorkbenchJobInput
  *
  * Input for creating a new workbench job
  */
 export type WorkbenchJobInput = {
+    modes?: WorkbenchJobModes;
     /**
      * The prompt for this job
      */
     prompt: string;
+};
+
+/**
+ * WorkbenchJobModes
+ *
+ * Mode-specific options for a workbench job
+ */
+export type WorkbenchJobModes = {
+    coding?: WorkbenchJobCodingModes;
+    /**
+     * Whether planning mode is enabled for this job
+     */
+    plan?: boolean;
 };
 
 /**

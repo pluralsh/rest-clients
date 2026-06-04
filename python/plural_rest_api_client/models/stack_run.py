@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.stack_run_status import StackRunStatus
 from ..models.stack_run_type import StackRunType
@@ -161,7 +160,7 @@ class StackRun:
         if isinstance(_approved_at, Unset):
             approved_at = UNSET
         else:
-            approved_at = isoparse(_approved_at)
+            approved_at = datetime.datetime.fromisoformat(_approved_at)
 
         cancellation_reason = d.pop("cancellation_reason", UNSET)
 
@@ -185,7 +184,7 @@ class StackRun:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         manage_state = d.pop("manage_state", UNSET)
 
@@ -214,7 +213,7 @@ class StackRun:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         workdir = d.pop("workdir", UNSET)
 

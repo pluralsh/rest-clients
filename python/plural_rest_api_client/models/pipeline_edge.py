@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -109,14 +108,14 @@ class PipelineEdge:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         _promoted_at = d.pop("promoted_at", UNSET)
         promoted_at: datetime.datetime | Unset
         if isinstance(_promoted_at, Unset):
             promoted_at = UNSET
         else:
-            promoted_at = isoparse(_promoted_at)
+            promoted_at = datetime.datetime.fromisoformat(_promoted_at)
 
         to_id = d.pop("to_id", UNSET)
 
@@ -125,7 +124,7 @@ class PipelineEdge:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         pipeline_edge = cls(
             from_id=from_id,

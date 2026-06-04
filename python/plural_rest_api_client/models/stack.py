@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.stack_status import StackStatus
 from ..models.stack_type import StackType
@@ -179,7 +178,7 @@ class Stack:
         if isinstance(_deleted_at, Unset):
             deleted_at = UNSET
         else:
-            deleted_at = isoparse(_deleted_at)
+            deleted_at = datetime.datetime.fromisoformat(_deleted_at)
 
         _git = d.pop("git", UNSET)
         git: Git | Unset
@@ -195,7 +194,7 @@ class Stack:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         interval = d.pop("interval", UNSET)
 
@@ -228,7 +227,7 @@ class Stack:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         workdir = d.pop("workdir", UNSET)
 

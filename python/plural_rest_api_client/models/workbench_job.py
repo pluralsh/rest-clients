@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.workbench_job_status import WorkbenchJobStatus
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+    from ..models.workbench_job_modes import WorkbenchJobModes
     from ..models.workbench_job_result import WorkbenchJobResult
 
 
@@ -27,6 +27,7 @@ class WorkbenchJob:
         error (str | Unset): Error message when the job failed
         id (str | Unset): Unique identifier for the job
         inserted_at (datetime.datetime | Unset):
+        modes (WorkbenchJobModes | Unset): Mode-specific options for a workbench job
         prompt (str | Unset): The prompt for this run
         result (WorkbenchJobResult | Unset): The result of a workbench job run (working theory, conclusion, todos,
             metadata)
@@ -41,6 +42,7 @@ class WorkbenchJob:
     error: str | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
+    modes: WorkbenchJobModes | Unset = UNSET
     prompt: str | Unset = UNSET
     result: WorkbenchJobResult | Unset = UNSET
     started_at: datetime.datetime | Unset = UNSET
@@ -62,6 +64,10 @@ class WorkbenchJob:
         inserted_at: str | Unset = UNSET
         if not isinstance(self.inserted_at, Unset):
             inserted_at = self.inserted_at.isoformat()
+
+        modes: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.modes, Unset):
+            modes = self.modes.to_dict()
 
         prompt = self.prompt
 
@@ -96,6 +102,8 @@ class WorkbenchJob:
             field_dict["id"] = id
         if inserted_at is not UNSET:
             field_dict["inserted_at"] = inserted_at
+        if modes is not UNSET:
+            field_dict["modes"] = modes
         if prompt is not UNSET:
             field_dict["prompt"] = prompt
         if result is not UNSET:
@@ -115,6 +123,7 @@ class WorkbenchJob:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.workbench_job_modes import WorkbenchJobModes
         from ..models.workbench_job_result import WorkbenchJobResult
 
         d = dict(src_dict)
@@ -123,7 +132,7 @@ class WorkbenchJob:
         if isinstance(_completed_at, Unset):
             completed_at = UNSET
         else:
-            completed_at = isoparse(_completed_at)
+            completed_at = datetime.datetime.fromisoformat(_completed_at)
 
         error = d.pop("error", UNSET)
 
@@ -134,7 +143,14 @@ class WorkbenchJob:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
+
+        _modes = d.pop("modes", UNSET)
+        modes: WorkbenchJobModes | Unset
+        if isinstance(_modes, Unset):
+            modes = UNSET
+        else:
+            modes = WorkbenchJobModes.from_dict(_modes)
 
         prompt = d.pop("prompt", UNSET)
 
@@ -150,7 +166,7 @@ class WorkbenchJob:
         if isinstance(_started_at, Unset):
             started_at = UNSET
         else:
-            started_at = isoparse(_started_at)
+            started_at = datetime.datetime.fromisoformat(_started_at)
 
         _status = d.pop("status", UNSET)
         status: WorkbenchJobStatus | Unset
@@ -164,7 +180,7 @@ class WorkbenchJob:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         user_id = d.pop("user_id", UNSET)
 
@@ -175,6 +191,7 @@ class WorkbenchJob:
             error=error,
             id=id,
             inserted_at=inserted_at,
+            modes=modes,
             prompt=prompt,
             result=result,
             started_at=started_at,

@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.cluster_distro import ClusterDistro
 from ..types import UNSET, Unset
@@ -245,7 +244,7 @@ class Cluster:
         if isinstance(_deleted_at, Unset):
             deleted_at = UNSET
         else:
-            deleted_at = isoparse(_deleted_at)
+            deleted_at = datetime.datetime.fromisoformat(_deleted_at)
 
         _distro = d.pop("distro", UNSET)
         distro: ClusterDistro | Unset
@@ -263,7 +262,7 @@ class Cluster:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         installed = d.pop("installed", UNSET)
 
@@ -293,7 +292,7 @@ class Cluster:
         if isinstance(_pinged_at, Unset):
             pinged_at = UNSET
         else:
-            pinged_at = isoparse(_pinged_at)
+            pinged_at = datetime.datetime.fromisoformat(_pinged_at)
 
         pod_count = d.pop("pod_count", UNSET)
 
@@ -308,7 +307,7 @@ class Cluster:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         version = d.pop("version", UNSET)
 

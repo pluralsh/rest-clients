@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
@@ -82,7 +81,7 @@ class User:
 
         id = d.pop("id")
 
-        inserted_at = isoparse(d.pop("inserted_at"))
+        inserted_at = datetime.datetime.fromisoformat(d.pop("inserted_at"))
 
         _roles = d.pop("roles", UNSET)
         roles: ConsoleOpenAPIUserRoles | Unset
@@ -98,7 +97,7 @@ class User:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         user = cls(
             email=email,

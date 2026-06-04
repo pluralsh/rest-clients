@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.sentinel_status import SentinelStatus
 from ..types import UNSET, Unset
@@ -130,14 +129,14 @@ class Sentinel:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         _last_run_at = d.pop("last_run_at", UNSET)
         last_run_at: datetime.datetime | Unset
         if isinstance(_last_run_at, Unset):
             last_run_at = UNSET
         else:
-            last_run_at = isoparse(_last_run_at)
+            last_run_at = datetime.datetime.fromisoformat(_last_run_at)
 
         name = d.pop("name", UNSET)
 
@@ -157,7 +156,7 @@ class Sentinel:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         sentinel = cls(
             checks=checks,

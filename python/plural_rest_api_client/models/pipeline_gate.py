@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-from dateutil.parser import isoparse
 
 from ..models.pipeline_gate_state import PipelineGateState
 from ..models.pipeline_gate_type import PipelineGateType
@@ -85,7 +84,7 @@ class PipelineGate:
         if isinstance(_inserted_at, Unset):
             inserted_at = UNSET
         else:
-            inserted_at = isoparse(_inserted_at)
+            inserted_at = datetime.datetime.fromisoformat(_inserted_at)
 
         name = d.pop("name", UNSET)
 
@@ -108,7 +107,7 @@ class PipelineGate:
         if isinstance(_updated_at, Unset):
             updated_at = UNSET
         else:
-            updated_at = isoparse(_updated_at)
+            updated_at = datetime.datetime.fromisoformat(_updated_at)
 
         pipeline_gate = cls(
             id=id,
