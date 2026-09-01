@@ -34,6 +34,7 @@ const (
 // Defines values for AgentRunMode.
 const (
 	AgentRunModeAnalyze AgentRunMode = "analyze"
+	AgentRunModeReview  AgentRunMode = "review"
 	AgentRunModeWrite   AgentRunMode = "write"
 )
 
@@ -51,6 +52,7 @@ const (
 // Defines values for AgentRunInputMode.
 const (
 	AgentRunInputModeAnalyze AgentRunInputMode = "analyze"
+	AgentRunInputModeReview  AgentRunInputMode = "review"
 	AgentRunInputModeWrite   AgentRunInputMode = "write"
 )
 
@@ -61,6 +63,7 @@ const (
 	AgentRuntimeTypeCustom   AgentRuntimeType = "custom"
 	AgentRuntimeTypeGemini   AgentRuntimeType = "gemini"
 	AgentRuntimeTypeOpencode AgentRuntimeType = "opencode"
+	AgentRuntimeTypePi       AgentRuntimeType = "pi"
 )
 
 // Defines values for AgentSessionType.
@@ -160,11 +163,11 @@ const (
 
 // Defines values for HelmRepositoryInputProvider.
 const (
-	Aws    HelmRepositoryInputProvider = "aws"
-	Azure  HelmRepositoryInputProvider = "azure"
-	Basic  HelmRepositoryInputProvider = "basic"
-	Bearer HelmRepositoryInputProvider = "bearer"
-	Gcp    HelmRepositoryInputProvider = "gcp"
+	HelmRepositoryInputProviderAws    HelmRepositoryInputProvider = "aws"
+	HelmRepositoryInputProviderAzure  HelmRepositoryInputProvider = "azure"
+	HelmRepositoryInputProviderBasic  HelmRepositoryInputProvider = "basic"
+	HelmRepositoryInputProviderBearer HelmRepositoryInputProvider = "bearer"
+	HelmRepositoryInputProviderGcp    HelmRepositoryInputProvider = "gcp"
 )
 
 // Defines values for PipelineGateState.
@@ -307,16 +310,20 @@ const (
 
 // Defines values for StackType.
 const (
-	StackTypeAnsible   StackType = "ansible"
-	StackTypeCustom    StackType = "custom"
-	StackTypeTerraform StackType = "terraform"
+	StackTypeAnsible    StackType = "ansible"
+	StackTypeCustom     StackType = "custom"
+	StackTypePulumi     StackType = "pulumi"
+	StackTypeTerraform  StackType = "terraform"
+	StackTypeTerragrunt StackType = "terragrunt"
 )
 
 // Defines values for StackInputType.
 const (
-	StackInputTypeAnsible   StackInputType = "ansible"
-	StackInputTypeCustom    StackInputType = "custom"
-	StackInputTypeTerraform StackInputType = "terraform"
+	StackInputTypeAnsible    StackInputType = "ansible"
+	StackInputTypeCustom     StackInputType = "custom"
+	StackInputTypePulumi     StackInputType = "pulumi"
+	StackInputTypeTerraform  StackInputType = "terraform"
+	StackInputTypeTerragrunt StackInputType = "terragrunt"
 )
 
 // Defines values for StackRunStatus.
@@ -332,9 +339,17 @@ const (
 
 // Defines values for StackRunType.
 const (
-	StackRunTypeAnsible   StackRunType = "ansible"
-	StackRunTypeCustom    StackRunType = "custom"
-	StackRunTypeTerraform StackRunType = "terraform"
+	StackRunTypeAnsible    StackRunType = "ansible"
+	StackRunTypeCustom     StackRunType = "custom"
+	StackRunTypePulumi     StackRunType = "pulumi"
+	StackRunTypeTerraform  StackRunType = "terraform"
+	StackRunTypeTerragrunt StackRunType = "terragrunt"
+)
+
+// Defines values for WorkbenchBudgetUnit.
+const (
+	Dollar WorkbenchBudgetUnit = "dollar"
+	Token  WorkbenchBudgetUnit = "token"
 )
 
 // Defines values for WorkbenchJobStatus.
@@ -345,6 +360,18 @@ const (
 	WorkbenchJobStatusPending    WorkbenchJobStatus = "pending"
 	WorkbenchJobStatusRunning    WorkbenchJobStatus = "running"
 	WorkbenchJobStatusSuccessful WorkbenchJobStatus = "successful"
+)
+
+// Defines values for WorkbenchJobModelProvider.
+const (
+	WorkbenchJobModelProviderAnthropic        WorkbenchJobModelProvider = "anthropic"
+	WorkbenchJobModelProviderAzure            WorkbenchJobModelProvider = "azure"
+	WorkbenchJobModelProviderBedrock          WorkbenchJobModelProvider = "bedrock"
+	WorkbenchJobModelProviderOllama           WorkbenchJobModelProvider = "ollama"
+	WorkbenchJobModelProviderOpenai           WorkbenchJobModelProvider = "openai"
+	WorkbenchJobModelProviderOpenaiCompatible WorkbenchJobModelProvider = "openai_compatible"
+	WorkbenchJobModelProviderVertex           WorkbenchJobModelProvider = "vertex"
+	WorkbenchJobModelProviderXai              WorkbenchJobModelProvider = "xai"
 )
 
 // Defines values for ListAgentRuntimesParamsType.
@@ -427,6 +454,12 @@ type AgentRun struct {
 	// FlowId ID of the flow this agent run is associated with, if any
 	FlowId *string `json:"flow_id,omitempty"`
 
+	// Followup Whether this agent run is a follow-up to a pull request
+	Followup *bool `json:"followup,omitempty"`
+
+	// FollowupPrUrl The pull request URL this follow-up run is targeting
+	FollowupPrUrl *string `json:"followup_pr_url,omitempty"`
+
 	// Id Unique identifier for the agent run
 	Id         *string    `json:"id,omitempty"`
 	InsertedAt *time.Time `json:"inserted_at,omitempty"`
@@ -474,6 +507,9 @@ type AgentRunInput struct {
 	// Approval Whether this agent run requires approval before continuing
 	Approval *bool `json:"approval,omitempty"`
 
+	// Branch The branch this agent run should operate on (if not set, the repository default branch is used)
+	Branch *string `json:"branch,omitempty"`
+
 	// FlowId Optional flow ID to associate this agent run with
 	FlowId *string `json:"flow_id,omitempty"`
 
@@ -513,6 +549,9 @@ type AgentRuntime struct {
 	// Id Unique identifier for the agent runtime
 	Id         *string    `json:"id,omitempty"`
 	InsertedAt *time.Time `json:"inserted_at,omitempty"`
+
+	// Model Model override for a workbench job
+	Model *WorkbenchJobModel `json:"model,omitempty"`
 
 	// Name Human-readable name of this runtime
 	Name *string `json:"name,omitempty"`
@@ -1235,6 +1274,15 @@ type HelmSpec struct {
 	// Chart Helm chart name (e.g., "nginx")
 	Chart *string `json:"chart,omitempty"`
 
+	// PythonFile A python file to use for helm applies
+	PythonFile *string `json:"python_file,omitempty"`
+
+	// PythonFolder A folder of python files to include in the final script used
+	PythonFolder *string `json:"python_folder,omitempty"`
+
+	// PythonScript A python script to use for helm applies
+	PythonScript *string `json:"python_script,omitempty"`
+
 	// Release Helm release name for the deployment
 	Release *string `json:"release,omitempty"`
 
@@ -1258,6 +1306,15 @@ type HelmSpec struct {
 type HelmSpecInput struct {
 	// Chart Name of the Helm chart to deploy
 	Chart *string `json:"chart,omitempty"`
+
+	// PythonFile A python file to use for helm applies
+	PythonFile *string `json:"python_file,omitempty"`
+
+	// PythonFolder A folder of python files to include in the final script used
+	PythonFolder *string `json:"python_folder,omitempty"`
+
+	// PythonScript A python script to use for helm applies
+	PythonScript *string `json:"python_script,omitempty"`
 
 	// Release Desired Helm release name
 	Release *string `json:"release,omitempty"`
@@ -1559,6 +1616,44 @@ type PullRequest struct {
 
 // PullRequestStatus Current status of the pull request (open, merged, closed)
 type PullRequestStatus string
+
+// QueuedPrompt A deferred prompt queued for a workbench job.  The prompt will wait for the job to settle and for its dequeuable time to elapse before being sent to the job.
+type QueuedPrompt struct {
+	// ConsumedAt When the prompt was consumed
+	ConsumedAt *time.Time `json:"consumed_at,omitempty"`
+
+	// DequeableAt When the prompt becomes eligible to dequeue
+	DequeableAt *time.Time `json:"dequeable_at,omitempty"`
+
+	// Id Unique identifier for the queued prompt
+	Id         *string    `json:"id,omitempty"`
+	InsertedAt *time.Time `json:"inserted_at,omitempty"`
+
+	// Modes Mode-specific options for a workbench job
+	Modes *WorkbenchJobModes `json:"modes,omitempty"`
+
+	// Prompt The prompt text
+	Prompt    *string    `json:"prompt,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+
+	// UserId ID of the user this prompt runs as
+	UserId *string `json:"user_id,omitempty"`
+
+	// WorkbenchJobId ID of the workbench job this prompt targets
+	WorkbenchJobId *string `json:"workbench_job_id,omitempty"`
+}
+
+// QueuedPromptInput Input for creating a deferred workbench prompt
+type QueuedPromptInput struct {
+	// DequeableAt When the prompt becomes eligible to dequeue
+	DequeableAt time.Time `json:"dequeable_at"`
+
+	// Modes Mode-specific options for a workbench job
+	Modes *WorkbenchJobModes `json:"modes,omitempty"`
+
+	// Prompt The prompt to send when dequeued
+	Prompt string `json:"prompt"`
+}
 
 // RendererHelm Helm-specific configuration for a renderer
 type RendererHelm struct {
@@ -2162,6 +2257,9 @@ type Workbench struct {
 	// AgentRuntimeId ID of the agent runtime for this workbench
 	AgentRuntimeId *string `json:"agent_runtime_id,omitempty"`
 
+	// Budget Token bucket budget configuration and current state for a workbench
+	Budget *WorkbenchBudget `json:"budget,omitempty"`
+
 	// Description Description of the workbench
 	Description *string `json:"description,omitempty"`
 
@@ -2182,6 +2280,30 @@ type Workbench struct {
 	SystemPrompt *string    `json:"system_prompt,omitempty"`
 	UpdatedAt    *time.Time `json:"updated_at,omitempty"`
 }
+
+// WorkbenchBudget Token bucket budget configuration and current state for a workbench
+type WorkbenchBudget struct {
+	// Enabled Whether budget tracking is enabled
+	Enabled *bool `json:"enabled,omitempty"`
+
+	// Last Remaining budget capacity
+	Last *float32 `json:"last,omitempty"`
+
+	// LastUpdated When the budget was last updated
+	LastUpdated *time.Time `json:"last_updated,omitempty"`
+
+	// Maximum Maximum budget capacity
+	Maximum *float32 `json:"maximum,omitempty"`
+
+	// MinFree Minimum budget capacity to keep free
+	MinFree *float32 `json:"min_free,omitempty"`
+
+	// Unit The budget unit
+	Unit *WorkbenchBudgetUnit `json:"unit,omitempty"`
+}
+
+// WorkbenchBudgetUnit The budget unit
+type WorkbenchBudgetUnit string
 
 // WorkbenchJob A single run of a workbench
 type WorkbenchJob struct {
@@ -2239,13 +2361,31 @@ type WorkbenchJobInput struct {
 	Prompt string `json:"prompt"`
 }
 
+// WorkbenchJobModel Model override for a workbench job
+type WorkbenchJobModel struct {
+	// Model The model name for this job
+	Model string `json:"model"`
+
+	// Provider The AI provider for this job
+	Provider WorkbenchJobModelProvider `json:"provider"`
+}
+
+// WorkbenchJobModelProvider The AI provider for this job
+type WorkbenchJobModelProvider string
+
 // WorkbenchJobModes Mode-specific options for a workbench job
 type WorkbenchJobModes struct {
 	// Coding Coding mode options for a workbench job
 	Coding *WorkbenchJobCodingModes `json:"coding,omitempty"`
 
+	// Model Model override for a workbench job
+	Model *WorkbenchJobModel `json:"model,omitempty"`
+
 	// Plan Whether planning mode is enabled for this job
 	Plan *bool `json:"plan,omitempty"`
+
+	// Verification Whether verification mode is enabled for this job
+	Verification *bool `json:"verification,omitempty"`
 }
 
 // WorkbenchJobResult The result of a workbench job run (working theory, conclusion, todos, metadata)
@@ -2262,6 +2402,9 @@ type WorkbenchJobResult struct {
 
 	// Metadata Metadata associated with a workbench job result
 	Metadata *WorkbenchJobResultMetadata `json:"metadata,omitempty"`
+
+	// Objective The sole active objective for this investigation
+	Objective *string `json:"objective,omitempty"`
 
 	// Todos Todos for this result
 	Todos     *[]WorkbenchJobResultTodo `json:"todos,omitempty"`
@@ -2334,6 +2477,11 @@ type ListSentinelsParams struct {
 
 // ListSentinelsParamsStatus defines parameters for ListSentinels.
 type ListSentinelsParamsStatus string
+
+// GetSentinelByNameParams defines parameters for GetSentinelByName.
+type GetSentinelByNameParams struct {
+	Name string `form:"name" json:"name"`
+}
 
 // ListSentinelRunsParams defines parameters for ListSentinelRuns.
 type ListSentinelRunsParams struct {
@@ -2439,6 +2587,11 @@ type ListPipelinesParams struct {
 	PerPage   *int    `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
+// GetPipelineByNameParams defines parameters for GetPipelineByName.
+type GetPipelineByNameParams struct {
+	Name string `form:"name" json:"name"`
+}
+
 // ListServicesParams defines parameters for ListServices.
 type ListServicesParams struct {
 	ClusterId *string `form:"cluster_id,omitempty" json:"cluster_id,omitempty"`
@@ -2494,6 +2647,11 @@ type ListPrAutomationsParams struct {
 	PerPage   *int    `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
+// GetPrAutomationByNameParams defines parameters for GetPrAutomationByName.
+type GetPrAutomationByNameParams struct {
+	Name string `form:"name" json:"name"`
+}
+
 // ListPullRequestsParams defines parameters for ListPullRequests.
 type ListPullRequestsParams struct {
 	ClusterId *string `form:"cluster_id,omitempty" json:"cluster_id,omitempty"`
@@ -2540,6 +2698,9 @@ type TriggerSentinelJSONRequestBody = SentinelRunOverridesInput
 
 // CreateAgentSessionJSONRequestBody defines body for CreateAgentSession for application/json ContentType.
 type CreateAgentSessionJSONRequestBody = AgentSessionInput
+
+// CreateQueuedPromptJSONRequestBody defines body for CreateQueuedPrompt for application/json ContentType.
+type CreateQueuedPromptJSONRequestBody = QueuedPromptInput
 
 // CreateWorkbenchJobJSONRequestBody defines body for CreateWorkbenchJob for application/json ContentType.
 type CreateWorkbenchJobJSONRequestBody = WorkbenchJobInput
@@ -2697,6 +2858,9 @@ type ClientInterface interface {
 	// ListSentinels request
 	ListSentinels(ctx context.Context, params *ListSentinelsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetSentinelByName request
+	GetSentinelByName(ctx context.Context, params *GetSentinelByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetSentinel request
 	GetSentinel(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2725,8 +2889,16 @@ type ClientInterface interface {
 	// GetWorkbenchJob request
 	GetWorkbenchJob(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// CreateQueuedPromptWithBody request with any body
+	CreateQueuedPromptWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateQueuedPrompt(ctx context.Context, id string, body CreateQueuedPromptJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetWorkbenchByName request
 	GetWorkbenchByName(ctx context.Context, params *GetWorkbenchByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteQueuedPrompt request
+	DeleteQueuedPrompt(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetWorkbench request
 	GetWorkbench(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2827,6 +2999,9 @@ type ClientInterface interface {
 	// ListPipelines request
 	ListPipelines(ctx context.Context, params *ListPipelinesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetPipelineByName request
+	GetPipelineByName(ctx context.Context, params *GetPipelineByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetPipeline request
 	GetPipeline(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2906,6 +3081,9 @@ type ClientInterface interface {
 
 	// ListPrAutomations request
 	ListPrAutomations(ctx context.Context, params *ListPrAutomationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPrAutomationByName request
+	GetPrAutomationByName(ctx context.Context, params *GetPrAutomationByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetPrAutomation request
 	GetPrAutomation(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3060,6 +3238,18 @@ func (c *Client) ListSentinels(ctx context.Context, params *ListSentinelsParams,
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetSentinelByName(ctx context.Context, params *GetSentinelByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSentinelByNameRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetSentinel(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetSentinelRequest(c.Server, id)
 	if err != nil {
@@ -3180,8 +3370,44 @@ func (c *Client) GetWorkbenchJob(ctx context.Context, id string, reqEditors ...R
 	return c.Client.Do(req)
 }
 
+func (c *Client) CreateQueuedPromptWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateQueuedPromptRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateQueuedPrompt(ctx context.Context, id string, body CreateQueuedPromptJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateQueuedPromptRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetWorkbenchByName(ctx context.Context, params *GetWorkbenchByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetWorkbenchByNameRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteQueuedPrompt(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteQueuedPromptRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -3624,6 +3850,18 @@ func (c *Client) ListPipelines(ctx context.Context, params *ListPipelinesParams,
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetPipelineByName(ctx context.Context, params *GetPipelineByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPipelineByNameRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) GetPipeline(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetPipelineRequest(c.Server, id)
 	if err != nil {
@@ -3962,6 +4200,18 @@ func (c *Client) UpdateScmConnection(ctx context.Context, id string, body Update
 
 func (c *Client) ListPrAutomations(ctx context.Context, params *ListPrAutomationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewListPrAutomationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPrAutomationByName(ctx context.Context, params *GetPrAutomationByNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPrAutomationByNameRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -4613,6 +4863,51 @@ func NewListSentinelsRequest(server string, params *ListSentinelsParams) (*http.
 	return req, nil
 }
 
+// NewGetSentinelByNameRequest generates requests for GetSentinelByName
+func NewGetSentinelByNameRequest(server string, params *GetSentinelByNameParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/api/ai/sentinels/name")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "name", runtime.ParamLocationQuery, params.Name); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetSentinelRequest generates requests for GetSentinel
 func NewGetSentinelRequest(server string, id string) (*http.Request, error) {
 	var err error
@@ -5036,6 +5331,53 @@ func NewGetWorkbenchJobRequest(server string, id string) (*http.Request, error) 
 	return req, nil
 }
 
+// NewCreateQueuedPromptRequest calls the generic CreateQueuedPrompt builder with application/json body
+func NewCreateQueuedPromptRequest(server string, id string, body CreateQueuedPromptJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateQueuedPromptRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewCreateQueuedPromptRequestWithBody generates requests for CreateQueuedPrompt with any type of body
+func NewCreateQueuedPromptRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/api/ai/workbenches/jobs/%s/prompts", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetWorkbenchByNameRequest generates requests for GetWorkbenchByName
 func NewGetWorkbenchByNameRequest(server string, params *GetWorkbenchByNameParams) (*http.Request, error) {
 	var err error
@@ -5074,6 +5416,40 @@ func NewGetWorkbenchByNameRequest(server string, params *GetWorkbenchByNameParam
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteQueuedPromptRequest generates requests for DeleteQueuedPrompt
+func NewDeleteQueuedPromptRequest(server string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/api/ai/workbenches/prompts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -6571,6 +6947,51 @@ func NewListPipelinesRequest(server string, params *ListPipelinesParams) (*http.
 	return req, nil
 }
 
+// NewGetPipelineByNameRequest generates requests for GetPipelineByName
+func NewGetPipelineByNameRequest(server string, params *GetPipelineByNameParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/api/cd/pipelines/name")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "name", runtime.ParamLocationQuery, params.Name); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetPipelineRequest generates requests for GetPipeline
 func NewGetPipelineRequest(server string, id string) (*http.Request, error) {
 	var err error
@@ -7759,6 +8180,51 @@ func NewListPrAutomationsRequest(server string, params *ListPrAutomationsParams)
 	return req, nil
 }
 
+// NewGetPrAutomationByNameRequest generates requests for GetPrAutomationByName
+func NewGetPrAutomationByNameRequest(server string, params *GetPrAutomationByNameParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/api/scm/prautomations/name")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "name", runtime.ParamLocationQuery, params.Name); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetPrAutomationRequest generates requests for GetPrAutomation
 func NewGetPrAutomationRequest(server string, id string) (*http.Request, error) {
 	var err error
@@ -8663,6 +9129,9 @@ type ClientWithResponsesInterface interface {
 	// ListSentinelsWithResponse request
 	ListSentinelsWithResponse(ctx context.Context, params *ListSentinelsParams, reqEditors ...RequestEditorFn) (*ListSentinelsResponse, error)
 
+	// GetSentinelByNameWithResponse request
+	GetSentinelByNameWithResponse(ctx context.Context, params *GetSentinelByNameParams, reqEditors ...RequestEditorFn) (*GetSentinelByNameResponse, error)
+
 	// GetSentinelWithResponse request
 	GetSentinelWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetSentinelResponse, error)
 
@@ -8691,8 +9160,16 @@ type ClientWithResponsesInterface interface {
 	// GetWorkbenchJobWithResponse request
 	GetWorkbenchJobWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetWorkbenchJobResponse, error)
 
+	// CreateQueuedPromptWithBodyWithResponse request with any body
+	CreateQueuedPromptWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateQueuedPromptResponse, error)
+
+	CreateQueuedPromptWithResponse(ctx context.Context, id string, body CreateQueuedPromptJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateQueuedPromptResponse, error)
+
 	// GetWorkbenchByNameWithResponse request
 	GetWorkbenchByNameWithResponse(ctx context.Context, params *GetWorkbenchByNameParams, reqEditors ...RequestEditorFn) (*GetWorkbenchByNameResponse, error)
+
+	// DeleteQueuedPromptWithResponse request
+	DeleteQueuedPromptWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteQueuedPromptResponse, error)
 
 	// GetWorkbenchWithResponse request
 	GetWorkbenchWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetWorkbenchResponse, error)
@@ -8793,6 +9270,9 @@ type ClientWithResponsesInterface interface {
 	// ListPipelinesWithResponse request
 	ListPipelinesWithResponse(ctx context.Context, params *ListPipelinesParams, reqEditors ...RequestEditorFn) (*ListPipelinesResponse, error)
 
+	// GetPipelineByNameWithResponse request
+	GetPipelineByNameWithResponse(ctx context.Context, params *GetPipelineByNameParams, reqEditors ...RequestEditorFn) (*GetPipelineByNameResponse, error)
+
 	// GetPipelineWithResponse request
 	GetPipelineWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetPipelineResponse, error)
 
@@ -8872,6 +9352,9 @@ type ClientWithResponsesInterface interface {
 
 	// ListPrAutomationsWithResponse request
 	ListPrAutomationsWithResponse(ctx context.Context, params *ListPrAutomationsParams, reqEditors ...RequestEditorFn) (*ListPrAutomationsResponse, error)
+
+	// GetPrAutomationByNameWithResponse request
+	GetPrAutomationByNameWithResponse(ctx context.Context, params *GetPrAutomationByNameParams, reqEditors ...RequestEditorFn) (*GetPrAutomationByNameResponse, error)
 
 	// GetPrAutomationWithResponse request
 	GetPrAutomationWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetPrAutomationResponse, error)
@@ -9084,6 +9567,28 @@ func (r ListSentinelsResponse) StatusCode() int {
 	return 0
 }
 
+type GetSentinelByNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Sentinel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSentinelByNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSentinelByNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetSentinelResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9260,6 +9765,28 @@ func (r GetWorkbenchJobResponse) StatusCode() int {
 	return 0
 }
 
+type CreateQueuedPromptResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *QueuedPrompt
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateQueuedPromptResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateQueuedPromptResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetWorkbenchByNameResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9276,6 +9803,28 @@ func (r GetWorkbenchByNameResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetWorkbenchByNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteQueuedPromptResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *QueuedPrompt
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteQueuedPromptResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteQueuedPromptResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9876,6 +10425,28 @@ func (r ListPipelinesResponse) StatusCode() int {
 	return 0
 }
 
+type GetPipelineByNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Pipeline
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPipelineByNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPipelineByNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetPipelineResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -10360,6 +10931,28 @@ func (r ListPrAutomationsResponse) StatusCode() int {
 	return 0
 }
 
+type GetPrAutomationByNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PrAutomation
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPrAutomationByNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPrAutomationByNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetPrAutomationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -10783,6 +11376,15 @@ func (c *ClientWithResponses) ListSentinelsWithResponse(ctx context.Context, par
 	return ParseListSentinelsResponse(rsp)
 }
 
+// GetSentinelByNameWithResponse request returning *GetSentinelByNameResponse
+func (c *ClientWithResponses) GetSentinelByNameWithResponse(ctx context.Context, params *GetSentinelByNameParams, reqEditors ...RequestEditorFn) (*GetSentinelByNameResponse, error) {
+	rsp, err := c.GetSentinelByName(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSentinelByNameResponse(rsp)
+}
+
 // GetSentinelWithResponse request returning *GetSentinelResponse
 func (c *ClientWithResponses) GetSentinelWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetSentinelResponse, error) {
 	rsp, err := c.GetSentinel(ctx, id, reqEditors...)
@@ -10871,6 +11473,23 @@ func (c *ClientWithResponses) GetWorkbenchJobWithResponse(ctx context.Context, i
 	return ParseGetWorkbenchJobResponse(rsp)
 }
 
+// CreateQueuedPromptWithBodyWithResponse request with arbitrary body returning *CreateQueuedPromptResponse
+func (c *ClientWithResponses) CreateQueuedPromptWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateQueuedPromptResponse, error) {
+	rsp, err := c.CreateQueuedPromptWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateQueuedPromptResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateQueuedPromptWithResponse(ctx context.Context, id string, body CreateQueuedPromptJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateQueuedPromptResponse, error) {
+	rsp, err := c.CreateQueuedPrompt(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateQueuedPromptResponse(rsp)
+}
+
 // GetWorkbenchByNameWithResponse request returning *GetWorkbenchByNameResponse
 func (c *ClientWithResponses) GetWorkbenchByNameWithResponse(ctx context.Context, params *GetWorkbenchByNameParams, reqEditors ...RequestEditorFn) (*GetWorkbenchByNameResponse, error) {
 	rsp, err := c.GetWorkbenchByName(ctx, params, reqEditors...)
@@ -10878,6 +11497,15 @@ func (c *ClientWithResponses) GetWorkbenchByNameWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseGetWorkbenchByNameResponse(rsp)
+}
+
+// DeleteQueuedPromptWithResponse request returning *DeleteQueuedPromptResponse
+func (c *ClientWithResponses) DeleteQueuedPromptWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteQueuedPromptResponse, error) {
+	rsp, err := c.DeleteQueuedPrompt(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteQueuedPromptResponse(rsp)
 }
 
 // GetWorkbenchWithResponse request returning *GetWorkbenchResponse
@@ -11195,6 +11823,15 @@ func (c *ClientWithResponses) ListPipelinesWithResponse(ctx context.Context, par
 	return ParseListPipelinesResponse(rsp)
 }
 
+// GetPipelineByNameWithResponse request returning *GetPipelineByNameResponse
+func (c *ClientWithResponses) GetPipelineByNameWithResponse(ctx context.Context, params *GetPipelineByNameParams, reqEditors ...RequestEditorFn) (*GetPipelineByNameResponse, error) {
+	rsp, err := c.GetPipelineByName(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPipelineByNameResponse(rsp)
+}
+
 // GetPipelineWithResponse request returning *GetPipelineResponse
 func (c *ClientWithResponses) GetPipelineWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetPipelineResponse, error) {
 	rsp, err := c.GetPipeline(ctx, id, reqEditors...)
@@ -11447,6 +12084,15 @@ func (c *ClientWithResponses) ListPrAutomationsWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseListPrAutomationsResponse(rsp)
+}
+
+// GetPrAutomationByNameWithResponse request returning *GetPrAutomationByNameResponse
+func (c *ClientWithResponses) GetPrAutomationByNameWithResponse(ctx context.Context, params *GetPrAutomationByNameParams, reqEditors ...RequestEditorFn) (*GetPrAutomationByNameResponse, error) {
+	rsp, err := c.GetPrAutomationByName(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPrAutomationByNameResponse(rsp)
 }
 
 // GetPrAutomationWithResponse request returning *GetPrAutomationResponse
@@ -11807,6 +12453,32 @@ func ParseListSentinelsResponse(rsp *http.Response) (*ListSentinelsResponse, err
 	return response, nil
 }
 
+// ParseGetSentinelByNameResponse parses an HTTP response from a GetSentinelByNameWithResponse call
+func ParseGetSentinelByNameResponse(rsp *http.Response) (*GetSentinelByNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSentinelByNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Sentinel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetSentinelResponse parses an HTTP response from a GetSentinelWithResponse call
 func ParseGetSentinelResponse(rsp *http.Response) (*GetSentinelResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12015,6 +12687,32 @@ func ParseGetWorkbenchJobResponse(rsp *http.Response) (*GetWorkbenchJobResponse,
 	return response, nil
 }
 
+// ParseCreateQueuedPromptResponse parses an HTTP response from a CreateQueuedPromptWithResponse call
+func ParseCreateQueuedPromptResponse(rsp *http.Response) (*CreateQueuedPromptResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateQueuedPromptResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest QueuedPrompt
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetWorkbenchByNameResponse parses an HTTP response from a GetWorkbenchByNameWithResponse call
 func ParseGetWorkbenchByNameResponse(rsp *http.Response) (*GetWorkbenchByNameResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -12031,6 +12729,32 @@ func ParseGetWorkbenchByNameResponse(rsp *http.Response) (*GetWorkbenchByNameRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Workbench
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteQueuedPromptResponse parses an HTTP response from a DeleteQueuedPromptWithResponse call
+func ParseDeleteQueuedPromptResponse(rsp *http.Response) (*DeleteQueuedPromptResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteQueuedPromptResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest QueuedPrompt
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -12743,6 +13467,32 @@ func ParseListPipelinesResponse(rsp *http.Response) (*ListPipelinesResponse, err
 	return response, nil
 }
 
+// ParseGetPipelineByNameResponse parses an HTTP response from a GetPipelineByNameWithResponse call
+func ParseGetPipelineByNameResponse(rsp *http.Response) (*GetPipelineByNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPipelineByNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Pipeline
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetPipelineResponse parses an HTTP response from a GetPipelineWithResponse call
 func ParseGetPipelineResponse(rsp *http.Response) (*GetPipelineResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -13305,6 +14055,32 @@ func ParseListPrAutomationsResponse(rsp *http.Response) (*ListPrAutomationsRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ConsoleOpenAPISCMPrAutomationList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPrAutomationByNameResponse parses an HTTP response from a GetPrAutomationByNameWithResponse call
+func ParseGetPrAutomationByNameResponse(rsp *http.Response) (*GetPrAutomationByNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPrAutomationByNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PrAutomation
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

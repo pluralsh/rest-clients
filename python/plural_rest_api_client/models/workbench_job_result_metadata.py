@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
 
@@ -43,8 +44,10 @@ class WorkbenchJobResultMetadata:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.workbench_job_result_metric import WorkbenchJobResultMetric
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.workbench_job_result_metric import (
+            WorkbenchJobResultMetric,
+        )
 
         d = dict(src_dict)
         _metrics = d.pop("metrics", UNSET)

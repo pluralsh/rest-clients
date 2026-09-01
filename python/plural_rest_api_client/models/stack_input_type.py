@@ -1,10 +1,12 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class StackInputType(str, Enum):
+class StackInputType(StrEnum):
     ANSIBLE = "ansible"
     CUSTOM = "custom"
+    PULUMI = "pulumi"
     TERRAFORM = "terraform"
+    TERRAGRUNT = "terragrunt"
 
     def __str__(self) -> str:
         return str(self.value)

@@ -94,6 +94,14 @@
             "description": "ID of the flow this agent run is associated with, if any",
             "type": "string"
           },
+          "followup": {
+            "description": "Whether this agent run is a follow-up to a pull request",
+            "type": "boolean"
+          },
+          "followup_pr_url": {
+            "description": "The pull request URL this follow-up run is targeting",
+            "type": "string"
+          },
           "id": {
             "description": "Unique identifier for the agent run",
             "type": "string"
@@ -125,7 +133,8 @@
             "description": "Mode of the agent run (analyze for read-only analysis, write for code modifications)",
             "enum": [
               "analyze",
-              "write"
+              "write",
+              "review"
             ],
             "type": "string"
           },
@@ -177,6 +186,10 @@
             "description": "Whether this agent run requires approval before continuing",
             "type": "boolean"
           },
+          "branch": {
+            "description": "The branch this agent run should operate on (if not set, the repository default branch is used)",
+            "type": "string"
+          },
           "flow_id": {
             "description": "Optional flow ID to associate this agent run with",
             "type": "string"
@@ -185,7 +198,8 @@
             "description": "Mode of the agent run (analyze for read-only, write for modifications)",
             "enum": [
               "analyze",
-              "write"
+              "write",
+              "review"
             ],
             "type": "string"
           },
@@ -245,6 +259,9 @@
             "format": "date-time",
             "type": "string"
           },
+          "model": {
+            "$ref": "#/components/schemas/WorkbenchJobModel"
+          },
           "name": {
             "description": "Human-readable name of this runtime",
             "type": "string"
@@ -256,7 +273,8 @@
               "opencode",
               "gemini",
               "custom",
-              "codex"
+              "codex",
+              "pi"
             ],
             "type": "string"
           },
@@ -1542,6 +1560,18 @@
             "description": "Helm chart name (e.g., \"nginx\")",
             "type": "string"
           },
+          "python_file": {
+            "description": "A python file to use for helm applies",
+            "type": "string"
+          },
+          "python_folder": {
+            "description": "A folder of python files to include in the final script used",
+            "type": "string"
+          },
+          "python_script": {
+            "description": "A python script to use for helm applies",
+            "type": "string"
+          },
           "release": {
             "description": "Helm release name for the deployment",
             "type": "string"
@@ -1578,6 +1608,18 @@
         "properties": {
           "chart": {
             "description": "Name of the Helm chart to deploy",
+            "type": "string"
+          },
+          "python_file": {
+            "description": "A python file to use for helm applies",
+            "type": "string"
+          },
+          "python_folder": {
+            "description": "A folder of python files to include in the final script used",
+            "type": "string"
+          },
+          "python_script": {
+            "description": "A python script to use for helm applies",
             "type": "string"
           },
           "release": {
@@ -2116,6 +2158,73 @@
             "type": "string"
           }
         },
+        "type": "object"
+      },
+      "QueuedPrompt": {
+        "title": "QueuedPrompt",
+        "description": "A deferred prompt queued for a workbench job.  The prompt will wait for the job to settle and for its dequeuable time to elapse before being sent to the job.",
+        "properties": {
+          "consumed_at": {
+            "description": "When the prompt was consumed",
+            "format": "date-time",
+            "type": "string"
+          },
+          "dequeable_at": {
+            "description": "When the prompt becomes eligible to dequeue",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier for the queued prompt",
+            "type": "string"
+          },
+          "inserted_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "modes": {
+            "$ref": "#/components/schemas/WorkbenchJobModes"
+          },
+          "prompt": {
+            "description": "The prompt text",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "ID of the user this prompt runs as",
+            "type": "string"
+          },
+          "workbench_job_id": {
+            "description": "ID of the workbench job this prompt targets",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "QueuedPromptInput": {
+        "title": "QueuedPromptInput",
+        "description": "Input for creating a deferred workbench prompt",
+        "properties": {
+          "dequeable_at": {
+            "description": "When the prompt becomes eligible to dequeue",
+            "format": "date-time",
+            "type": "string"
+          },
+          "modes": {
+            "$ref": "#/components/schemas/WorkbenchJobModes"
+          },
+          "prompt": {
+            "description": "The prompt to send when dequeued",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt",
+          "dequeable_at"
+        ],
         "type": "object"
       },
       "RendererHelm": {
@@ -2985,7 +3094,9 @@
             "enum": [
               "terraform",
               "ansible",
-              "custom"
+              "custom",
+              "terragrunt",
+              "pulumi"
             ],
             "type": "string"
           },
@@ -3040,7 +3151,9 @@
             "enum": [
               "terraform",
               "ansible",
-              "custom"
+              "custom",
+              "terragrunt",
+              "pulumi"
             ],
             "type": "string"
           },
@@ -3111,7 +3224,9 @@
             "enum": [
               "terraform",
               "ansible",
-              "custom"
+              "custom",
+              "terragrunt",
+              "pulumi"
             ],
             "type": "string"
           },
@@ -3224,6 +3339,9 @@
             "description": "ID of the agent runtime for this workbench",
             "type": "string"
           },
+          "budget": {
+            "$ref": "#/components/schemas/WorkbenchBudget"
+          },
           "description": {
             "description": "Description of the workbench",
             "type": "string"
@@ -3254,6 +3372,42 @@
           },
           "updated_at": {
             "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WorkbenchBudget": {
+        "title": "WorkbenchBudget",
+        "description": "Token bucket budget configuration and current state for a workbench",
+        "properties": {
+          "enabled": {
+            "description": "Whether budget tracking is enabled",
+            "type": "boolean"
+          },
+          "last": {
+            "description": "Remaining budget capacity",
+            "type": "number"
+          },
+          "last_updated": {
+            "description": "When the budget was last updated",
+            "format": "date-time",
+            "type": "string"
+          },
+          "maximum": {
+            "description": "Maximum budget capacity",
+            "type": "number"
+          },
+          "min_free": {
+            "description": "Minimum budget capacity to keep free",
+            "type": "number"
+          },
+          "unit": {
+            "description": "The budget unit",
+            "enum": [
+              "dollar",
+              "token"
+            ],
             "type": "string"
           }
         },
@@ -3354,6 +3508,35 @@
         ],
         "type": "object"
       },
+      "WorkbenchJobModel": {
+        "title": "WorkbenchJobModel",
+        "description": "Model override for a workbench job",
+        "properties": {
+          "model": {
+            "description": "The model name for this job",
+            "type": "string"
+          },
+          "provider": {
+            "description": "The AI provider for this job",
+            "enum": [
+              "openai",
+              "anthropic",
+              "ollama",
+              "azure",
+              "bedrock",
+              "vertex",
+              "openai_compatible",
+              "xai"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model"
+        ],
+        "type": "object"
+      },
       "WorkbenchJobModes": {
         "title": "WorkbenchJobModes",
         "description": "Mode-specific options for a workbench job",
@@ -3361,8 +3544,15 @@
           "coding": {
             "$ref": "#/components/schemas/WorkbenchJobCodingModes"
           },
+          "model": {
+            "$ref": "#/components/schemas/WorkbenchJobModel"
+          },
           "plan": {
             "description": "Whether planning mode is enabled for this job",
+            "type": "boolean"
+          },
+          "verification": {
+            "description": "Whether verification mode is enabled for this job",
             "type": "boolean"
           }
         },
@@ -3390,6 +3580,10 @@
           },
           "metadata": {
             "$ref": "#/components/schemas/WorkbenchJobResultMetadata"
+          },
+          "objective": {
+            "description": "The sole active objective for this investigation",
+            "type": "string"
           },
           "todos": {
             "description": "Todos for this result",
@@ -3771,6 +3965,39 @@
         ]
       }
     },
+    "/v1/api/ai/sentinels/name": {
+      "get": {
+        "tags": [
+          "sentinel"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sentinel"
+                }
+              }
+            },
+            "description": "no description"
+          }
+        },
+        "operationId": "GetSentinelByName",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "ai.read"
+        ]
+      }
+    },
     "/v1/api/ai/sentinels/{id}": {
       "get": {
         "tags": [
@@ -4091,6 +4318,49 @@
         ]
       }
     },
+    "/v1/api/ai/workbenches/jobs/{id}/prompts": {
+      "post": {
+        "tags": [
+          "workbench"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueuedPrompt"
+                }
+              }
+            },
+            "description": "no description"
+          }
+        },
+        "operationId": "CreateQueuedPrompt",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueuedPromptInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "x-required-scopes": [
+          "workbench.read"
+        ]
+      }
+    },
     "/v1/api/ai/workbenches/name": {
       "get": {
         "tags": [
@@ -4113,6 +4383,39 @@
           {
             "in": "query",
             "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "workbench.read"
+        ]
+      }
+    },
+    "/v1/api/ai/workbenches/prompts/{id}": {
+      "delete": {
+        "tags": [
+          "workbench"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueuedPrompt"
+                }
+              }
+            },
+            "description": "no description"
+          }
+        },
+        "operationId": "DeleteQueuedPrompt",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
               "type": "string"
@@ -5244,6 +5547,41 @@
         ]
       }
     },
+    "/v1/api/cd/pipelines/name": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pipeline"
+                }
+              }
+            },
+            "description": "no description"
+          }
+        },
+        "description": "Retrieves a single pipeline by its exact name, including its stages, edges, and gates",
+        "operationId": "GetPipelineByName",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Get a pipeline by name",
+        "x-required-scopes": [
+          "pipelines.read"
+        ]
+      }
+    },
     "/v1/api/cd/pipelines/{id}": {
       "get": {
         "tags": [
@@ -6126,6 +6464,39 @@
             "required": false,
             "schema": {
               "type": "integer"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "catalog.read"
+        ]
+      }
+    },
+    "/v1/api/scm/prautomations/name": {
+      "get": {
+        "tags": [
+          "prautomation"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrAutomation"
+                }
+              }
+            },
+            "description": "no description"
+          }
+        },
+        "operationId": "GetPrAutomationByName",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],

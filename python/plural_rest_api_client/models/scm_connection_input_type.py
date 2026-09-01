@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ScmConnectionInputType(str, Enum):
+class ScmConnectionInputType(StrEnum):
     AZURE_DEVOPS = "azure_devops"
     BITBUCKET = "bitbucket"
     BITBUCKET_DATACENTER = "bitbucket_datacenter"

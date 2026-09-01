@@ -6,6 +6,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..models.agent_run_language import AgentRunLanguage
 from ..models.agent_run_mode import AgentRunMode
@@ -25,6 +26,8 @@ class AgentRun:
         branch (str | Unset): The git branch the agent is operating on (uses default branch if not set)
         error (str | Unset): Error message if the agent run failed
         flow_id (str | Unset): ID of the flow this agent run is associated with, if any
+        followup (bool | Unset): Whether this agent run is a follow-up to a pull request
+        followup_pr_url (str | Unset): The pull request URL this follow-up run is targeting
         id (str | Unset): Unique identifier for the agent run
         inserted_at (datetime.datetime | Unset):
         language (AgentRunLanguage | Unset): Programming language used in the agent run (javascript, python, java, cpp,
@@ -47,6 +50,8 @@ class AgentRun:
     branch: str | Unset = UNSET
     error: str | Unset = UNSET
     flow_id: str | Unset = UNSET
+    followup: bool | Unset = UNSET
+    followup_pr_url: str | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
     language: AgentRunLanguage | Unset = UNSET
@@ -73,6 +78,10 @@ class AgentRun:
         error = self.error
 
         flow_id = self.flow_id
+
+        followup = self.followup
+
+        followup_pr_url = self.followup_pr_url
 
         id = self.id
 
@@ -121,6 +130,10 @@ class AgentRun:
             field_dict["error"] = error
         if flow_id is not UNSET:
             field_dict["flow_id"] = flow_id
+        if followup is not UNSET:
+            field_dict["followup"] = followup
+        if followup_pr_url is not UNSET:
+            field_dict["followup_pr_url"] = followup_pr_url
         if id is not UNSET:
             field_dict["id"] = id
         if inserted_at is not UNSET:
@@ -149,7 +162,7 @@ class AgentRun:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
         d = dict(src_dict)
         approval = d.pop("approval", UNSET)
 
@@ -165,6 +178,10 @@ class AgentRun:
         error = d.pop("error", UNSET)
 
         flow_id = d.pop("flow_id", UNSET)
+
+        followup = d.pop("followup", UNSET)
+
+        followup_pr_url = d.pop("followup_pr_url", UNSET)
 
         id = d.pop("id", UNSET)
 
@@ -221,6 +238,8 @@ class AgentRun:
             branch=branch,
             error=error,
             flow_id=flow_id,
+            followup=followup,
+            followup_pr_url=followup_pr_url,
             id=id,
             inserted_at=inserted_at,
             language=language,

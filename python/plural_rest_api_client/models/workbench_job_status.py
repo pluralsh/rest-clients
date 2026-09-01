@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class WorkbenchJobStatus(str, Enum):
+class WorkbenchJobStatus(StrEnum):
     CANCELLED = "cancelled"
     FAILED = "failed"
     PAUSED = "paused"

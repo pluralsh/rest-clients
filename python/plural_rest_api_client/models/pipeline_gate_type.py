@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class PipelineGateType(str, Enum):
+class PipelineGateType(StrEnum):
     APPROVAL = "approval"
     JOB = "job"
     SENTINEL = "sentinel"

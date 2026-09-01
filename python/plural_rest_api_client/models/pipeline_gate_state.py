@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class PipelineGateState(str, Enum):
+class PipelineGateState(StrEnum):
     CLOSED = "closed"
     OPEN = "open"
     PENDING = "pending"
