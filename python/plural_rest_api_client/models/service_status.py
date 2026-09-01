@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ServiceStatus(str, Enum):
+class ServiceStatus(StrEnum):
     FAILED = "failed"
     HEALTHY = "healthy"
     PAUSED = "paused"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class AgentRunLanguage(str, Enum):
+class AgentRunLanguage(StrEnum):
     CPP = "cpp"
     CSHARP = "csharp"
     GO = "go"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class GitRepositoryAuthMethod(str, Enum):
+class GitRepositoryAuthMethod(StrEnum):
     BASIC = "basic"
     SSH = "ssh"
 

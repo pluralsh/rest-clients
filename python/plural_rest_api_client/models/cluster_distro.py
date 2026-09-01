@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ClusterDistro(str, Enum):
+class ClusterDistro(StrEnum):
     AKS = "aks"
     EKS = "eks"
     GENERIC = "generic"

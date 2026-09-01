@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
 
@@ -28,6 +29,7 @@ class WorkbenchJobResult:
         id (str | Unset): Unique identifier for the result
         inserted_at (datetime.datetime | Unset):
         metadata (WorkbenchJobResultMetadata | Unset): Metadata associated with a workbench job result
+        objective (str | Unset): The sole active objective for this investigation
         todos (list[WorkbenchJobResultTodo] | Unset): Todos for this result
         updated_at (datetime.datetime | Unset):
         workbench_job_id (str | Unset): ID of the job this result belongs to
@@ -39,6 +41,7 @@ class WorkbenchJobResult:
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
     metadata: WorkbenchJobResultMetadata | Unset = UNSET
+    objective: str | Unset = UNSET
     todos: list[WorkbenchJobResultTodo] | Unset = UNSET
     updated_at: datetime.datetime | Unset = UNSET
     workbench_job_id: str | Unset = UNSET
@@ -59,6 +62,8 @@ class WorkbenchJobResult:
         metadata: dict[str, Any] | Unset = UNSET
         if not isinstance(self.metadata, Unset):
             metadata = self.metadata.to_dict()
+
+        objective = self.objective
 
         todos: list[dict[str, Any]] | Unset = UNSET
         if not isinstance(self.todos, Unset):
@@ -88,6 +93,8 @@ class WorkbenchJobResult:
             field_dict["inserted_at"] = inserted_at
         if metadata is not UNSET:
             field_dict["metadata"] = metadata
+        if objective is not UNSET:
+            field_dict["objective"] = objective
         if todos is not UNSET:
             field_dict["todos"] = todos
         if updated_at is not UNSET:
@@ -100,9 +107,13 @@ class WorkbenchJobResult:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.workbench_job_result_metadata import WorkbenchJobResultMetadata
-        from ..models.workbench_job_result_todo import WorkbenchJobResultTodo
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.workbench_job_result_metadata import (
+            WorkbenchJobResultMetadata,
+        )
+        from ..models.workbench_job_result_todo import (
+            WorkbenchJobResultTodo,
+        )
 
         d = dict(src_dict)
         conclusion = d.pop("conclusion", UNSET)
@@ -124,6 +135,8 @@ class WorkbenchJobResult:
             metadata = UNSET
         else:
             metadata = WorkbenchJobResultMetadata.from_dict(_metadata)
+
+        objective = d.pop("objective", UNSET)
 
         _todos = d.pop("todos", UNSET)
         todos: list[WorkbenchJobResultTodo] | Unset = UNSET
@@ -151,6 +164,7 @@ class WorkbenchJobResult:
             id=id,
             inserted_at=inserted_at,
             metadata=metadata,
+            objective=objective,
             todos=todos,
             updated_at=updated_at,
             workbench_job_id=workbench_job_id,

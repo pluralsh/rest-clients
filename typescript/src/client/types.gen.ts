@@ -59,6 +59,14 @@ export type AgentRun = {
      */
     flow_id?: string;
     /**
+     * Whether this agent run is a follow-up to a pull request
+     */
+    followup?: boolean;
+    /**
+     * The pull request URL this follow-up run is targeting
+     */
+    followup_pr_url?: string;
+    /**
      * Unique identifier for the agent run
      */
     id?: string;
@@ -74,7 +82,7 @@ export type AgentRun = {
     /**
      * Mode of the agent run (analyze for read-only analysis, write for code modifications)
      */
-    mode?: 'analyze' | 'write';
+    mode?: 'analyze' | 'write' | 'review';
     /**
      * The prompt given to the AI agent to process
      */
@@ -113,13 +121,17 @@ export type AgentRunInput = {
      */
     approval?: boolean;
     /**
+     * The branch this agent run should operate on (if not set, the repository default branch is used)
+     */
+    branch?: string;
+    /**
      * Optional flow ID to associate this agent run with
      */
     flow_id?: string;
     /**
      * Mode of the agent run (analyze for read-only, write for modifications)
      */
-    mode: 'analyze' | 'write';
+    mode: 'analyze' | 'write' | 'review';
     /**
      * The prompt to give to the agent describing the task to perform
      */
@@ -165,6 +177,7 @@ export type AgentRuntime = {
      */
     id?: string;
     inserted_at?: string;
+    model?: WorkbenchJobModel;
     /**
      * Human-readable name of this runtime
      */
@@ -172,7 +185,7 @@ export type AgentRuntime = {
     /**
      * Type of agent runtime (claude, opencode, gemini, custom)
      */
-    type?: 'claude' | 'opencode' | 'gemini' | 'custom' | 'codex';
+    type?: 'claude' | 'opencode' | 'gemini' | 'custom' | 'codex' | 'pi';
     updated_at?: string;
 };
 
@@ -1150,6 +1163,18 @@ export type HelmSpec = {
      */
     chart?: string;
     /**
+     * A python file to use for helm applies
+     */
+    python_file?: string;
+    /**
+     * A folder of python files to include in the final script used
+     */
+    python_folder?: string;
+    /**
+     * A python script to use for helm applies
+     */
+    python_script?: string;
+    /**
      * Helm release name for the deployment
      */
     release?: string;
@@ -1185,6 +1210,18 @@ export type HelmSpecInput = {
      * Name of the Helm chart to deploy
      */
     chart?: string;
+    /**
+     * A python file to use for helm applies
+     */
+    python_file?: string;
+    /**
+     * A folder of python files to include in the final script used
+     */
+    python_folder?: string;
+    /**
+     * A python script to use for helm applies
+     */
+    python_script?: string;
     /**
      * Desired Helm release name
      */
@@ -1620,6 +1657,58 @@ export type PullRequest = {
      * URL of the pull request in the source control provider
      */
     url?: string;
+};
+
+/**
+ * QueuedPrompt
+ *
+ * A deferred prompt queued for a workbench job.  The prompt will wait for the job to settle and for its dequeuable time to elapse before being sent to the job.
+ */
+export type QueuedPrompt = {
+    /**
+     * When the prompt was consumed
+     */
+    consumed_at?: string;
+    /**
+     * When the prompt becomes eligible to dequeue
+     */
+    dequeable_at?: string;
+    /**
+     * Unique identifier for the queued prompt
+     */
+    id?: string;
+    inserted_at?: string;
+    modes?: WorkbenchJobModes;
+    /**
+     * The prompt text
+     */
+    prompt?: string;
+    updated_at?: string;
+    /**
+     * ID of the user this prompt runs as
+     */
+    user_id?: string;
+    /**
+     * ID of the workbench job this prompt targets
+     */
+    workbench_job_id?: string;
+};
+
+/**
+ * QueuedPromptInput
+ *
+ * Input for creating a deferred workbench prompt
+ */
+export type QueuedPromptInput = {
+    /**
+     * When the prompt becomes eligible to dequeue
+     */
+    dequeable_at: string;
+    modes?: WorkbenchJobModes;
+    /**
+     * The prompt to send when dequeued
+     */
+    prompt: string;
 };
 
 /**
@@ -2257,7 +2346,7 @@ export type Stack = {
     project_id?: string;
     repository_id?: string;
     status?: 'queued' | 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'pending_approval';
-    type?: 'terraform' | 'ansible' | 'custom';
+    type?: 'terraform' | 'ansible' | 'custom' | 'terragrunt' | 'pulumi';
     updated_at?: string;
     workdir?: string;
 };
@@ -2278,7 +2367,7 @@ export type StackInput = {
     paused?: boolean;
     project_id?: string;
     repository_id?: string;
-    type?: 'terraform' | 'ansible' | 'custom';
+    type?: 'terraform' | 'ansible' | 'custom' | 'terragrunt' | 'pulumi';
     workdir?: string;
 };
 
@@ -2302,7 +2391,7 @@ export type StackRun = {
     repository_id?: string;
     stack_id?: string;
     status?: 'queued' | 'pending' | 'running' | 'successful' | 'failed' | 'cancelled' | 'pending_approval';
-    type?: 'terraform' | 'ansible' | 'custom';
+    type?: 'terraform' | 'ansible' | 'custom' | 'terragrunt' | 'pulumi';
     updated_at?: string;
     workdir?: string;
 };
@@ -2376,6 +2465,7 @@ export type Workbench = {
      * ID of the agent runtime for this workbench
      */
     agent_runtime_id?: string;
+    budget?: WorkbenchBudget;
     /**
      * Description of the workbench
      */
@@ -2402,6 +2492,38 @@ export type Workbench = {
      */
     system_prompt?: string;
     updated_at?: string;
+};
+
+/**
+ * WorkbenchBudget
+ *
+ * Token bucket budget configuration and current state for a workbench
+ */
+export type WorkbenchBudget = {
+    /**
+     * Whether budget tracking is enabled
+     */
+    enabled?: boolean;
+    /**
+     * Remaining budget capacity
+     */
+    last?: number;
+    /**
+     * When the budget was last updated
+     */
+    last_updated?: string;
+    /**
+     * Maximum budget capacity
+     */
+    maximum?: number;
+    /**
+     * Minimum budget capacity to keep free
+     */
+    min_free?: number;
+    /**
+     * The budget unit
+     */
+    unit?: 'dollar' | 'token';
 };
 
 /**
@@ -2478,16 +2600,37 @@ export type WorkbenchJobInput = {
 };
 
 /**
+ * WorkbenchJobModel
+ *
+ * Model override for a workbench job
+ */
+export type WorkbenchJobModel = {
+    /**
+     * The model name for this job
+     */
+    model: string;
+    /**
+     * The AI provider for this job
+     */
+    provider: 'openai' | 'anthropic' | 'ollama' | 'azure' | 'bedrock' | 'vertex' | 'openai_compatible' | 'xai';
+};
+
+/**
  * WorkbenchJobModes
  *
  * Mode-specific options for a workbench job
  */
 export type WorkbenchJobModes = {
     coding?: WorkbenchJobCodingModes;
+    model?: WorkbenchJobModel;
     /**
      * Whether planning mode is enabled for this job
      */
     plan?: boolean;
+    /**
+     * Whether verification mode is enabled for this job
+     */
+    verification?: boolean;
 };
 
 /**
@@ -2510,6 +2653,10 @@ export type WorkbenchJobResult = {
     id?: string;
     inserted_at?: string;
     metadata?: WorkbenchJobResultMetadata;
+    /**
+     * The sole active objective for this investigation
+     */
+    objective?: string;
     /**
      * Todos for this result
      */
@@ -2714,6 +2861,24 @@ export type ListSentinelsResponses = {
 
 export type ListSentinelsResponse = ListSentinelsResponses[keyof ListSentinelsResponses];
 
+export type GetSentinelByNameData = {
+    body?: never;
+    path?: never;
+    query: {
+        name: string;
+    };
+    url: '/v1/api/ai/sentinels/name';
+};
+
+export type GetSentinelByNameResponses = {
+    /**
+     * no description
+     */
+    200: Sentinel;
+};
+
+export type GetSentinelByNameResponse = GetSentinelByNameResponses[keyof GetSentinelByNameResponses];
+
 export type GetSentinelData = {
     body?: never;
     path: {
@@ -2863,6 +3028,24 @@ export type GetWorkbenchJobResponses = {
 
 export type GetWorkbenchJobResponse = GetWorkbenchJobResponses[keyof GetWorkbenchJobResponses];
 
+export type CreateQueuedPromptData = {
+    body: QueuedPromptInput;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/v1/api/ai/workbenches/jobs/{id}/prompts';
+};
+
+export type CreateQueuedPromptResponses = {
+    /**
+     * no description
+     */
+    200: QueuedPrompt;
+};
+
+export type CreateQueuedPromptResponse = CreateQueuedPromptResponses[keyof CreateQueuedPromptResponses];
+
 export type GetWorkbenchByNameData = {
     body?: never;
     path?: never;
@@ -2880,6 +3063,24 @@ export type GetWorkbenchByNameResponses = {
 };
 
 export type GetWorkbenchByNameResponse = GetWorkbenchByNameResponses[keyof GetWorkbenchByNameResponses];
+
+export type DeleteQueuedPromptData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/v1/api/ai/workbenches/prompts/{id}';
+};
+
+export type DeleteQueuedPromptResponses = {
+    /**
+     * no description
+     */
+    200: QueuedPrompt;
+};
+
+export type DeleteQueuedPromptResponse = DeleteQueuedPromptResponses[keyof DeleteQueuedPromptResponses];
 
 export type GetWorkbenchData = {
     body?: never;
@@ -3385,6 +3586,24 @@ export type ListPipelinesResponses = {
 
 export type ListPipelinesResponse = ListPipelinesResponses[keyof ListPipelinesResponses];
 
+export type GetPipelineByNameData = {
+    body?: never;
+    path?: never;
+    query: {
+        name: string;
+    };
+    url: '/v1/api/cd/pipelines/name';
+};
+
+export type GetPipelineByNameResponses = {
+    /**
+     * no description
+     */
+    200: Pipeline;
+};
+
+export type GetPipelineByNameResponse = GetPipelineByNameResponses[keyof GetPipelineByNameResponses];
+
 export type GetPipelineData = {
     body?: never;
     path: {
@@ -3793,6 +4012,24 @@ export type ListPrAutomationsResponses = {
 };
 
 export type ListPrAutomationsResponse = ListPrAutomationsResponses[keyof ListPrAutomationsResponses];
+
+export type GetPrAutomationByNameData = {
+    body?: never;
+    path?: never;
+    query: {
+        name: string;
+    };
+    url: '/v1/api/scm/prautomations/name';
+};
+
+export type GetPrAutomationByNameResponses = {
+    /**
+     * no description
+     */
+    200: PrAutomation;
+};
+
+export type GetPrAutomationByNameResponse = GetPrAutomationByNameResponses[keyof GetPrAutomationByNameResponses];
 
 export type GetPrAutomationData = {
     body?: never;

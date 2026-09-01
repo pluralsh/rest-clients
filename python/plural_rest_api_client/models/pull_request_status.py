@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class PullRequestStatus(str, Enum):
+class PullRequestStatus(StrEnum):
     CLOSED = "closed"
     MERGED = "merged"
     OPEN = "open"

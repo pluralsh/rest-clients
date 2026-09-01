@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ClusterUpgradeStepType(str, Enum):
+class ClusterUpgradeStepType(StrEnum):
     ADDON = "addon"
     CLOUD_ADDON = "cloud_addon"
     INFRASTRUCTURE = "infrastructure"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ListAgentRuntimesType(str, Enum):
+class ListAgentRuntimesType(StrEnum):
     CLAUDE = "claude"
     CUSTOM = "custom"
     GEMINI = "gemini"

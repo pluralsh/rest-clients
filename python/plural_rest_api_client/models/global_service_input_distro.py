@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class GlobalServiceInputDistro(str, Enum):
+class GlobalServiceInputDistro(StrEnum):
     AKS = "aks"
     EKS = "eks"
     GENERIC = "generic"
