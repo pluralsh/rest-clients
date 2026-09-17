@@ -5,6 +5,7 @@ from typing import Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
 
@@ -17,6 +18,9 @@ class HelmSpecInput:
 
     Attributes:
         chart (str | Unset): Name of the Helm chart to deploy
+        python_file (str | Unset): A python file to use for helm applies
+        python_folder (str | Unset): A folder of python files to include in the final script used
+        python_script (str | Unset): A python script to use for helm applies
         release (str | Unset): Desired Helm release name
         repository_id (str | Unset): ID of a GitRepository to use for sourcing this helm chart
         url (str | Unset): Helm chart repository URL
@@ -26,6 +30,9 @@ class HelmSpecInput:
     """
 
     chart: str | Unset = UNSET
+    python_file: str | Unset = UNSET
+    python_folder: str | Unset = UNSET
+    python_script: str | Unset = UNSET
     release: str | Unset = UNSET
     repository_id: str | Unset = UNSET
     url: str | Unset = UNSET
@@ -36,6 +43,12 @@ class HelmSpecInput:
 
     def to_dict(self) -> dict[str, Any]:
         chart = self.chart
+
+        python_file = self.python_file
+
+        python_folder = self.python_folder
+
+        python_script = self.python_script
 
         release = self.release
 
@@ -56,6 +69,12 @@ class HelmSpecInput:
         field_dict.update({})
         if chart is not UNSET:
             field_dict["chart"] = chart
+        if python_file is not UNSET:
+            field_dict["python_file"] = python_file
+        if python_folder is not UNSET:
+            field_dict["python_folder"] = python_folder
+        if python_script is not UNSET:
+            field_dict["python_script"] = python_script
         if release is not UNSET:
             field_dict["release"] = release
         if repository_id is not UNSET:
@@ -72,9 +91,15 @@ class HelmSpecInput:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
         d = dict(src_dict)
         chart = d.pop("chart", UNSET)
+
+        python_file = d.pop("python_file", UNSET)
+
+        python_folder = d.pop("python_folder", UNSET)
+
+        python_script = d.pop("python_script", UNSET)
 
         release = d.pop("release", UNSET)
 
@@ -90,6 +115,9 @@ class HelmSpecInput:
 
         helm_spec_input = cls(
             chart=chart,
+            python_file=python_file,
+            python_folder=python_folder,
+            python_script=python_script,
             release=release,
             repository_id=repository_id,
             url=url,

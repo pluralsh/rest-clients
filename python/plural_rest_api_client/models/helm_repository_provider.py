@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class HelmRepositoryProvider(str, Enum):
+class HelmRepositoryProvider(StrEnum):
     AWS = "aws"
     AZURE = "azure"
     BASIC = "basic"

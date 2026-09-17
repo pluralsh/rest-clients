@@ -1,8 +1,9 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class AgentRunMode(str, Enum):
+class AgentRunMode(StrEnum):
     ANALYZE = "analyze"
+    REVIEW = "review"
     WRITE = "write"
 
     def __str__(self) -> str:

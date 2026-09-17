@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class AgentRunStatus(str, Enum):
+class AgentRunStatus(StrEnum):
     BABYSITTING = "babysitting"
     CANCELLED = "cancelled"
     FAILED = "failed"

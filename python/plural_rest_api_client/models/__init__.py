@@ -105,6 +105,8 @@ from .project import Project
 from .promotion_criteria import PromotionCriteria
 from .pull_request import PullRequest
 from .pull_request_status import PullRequestStatus
+from .queued_prompt import QueuedPrompt
+from .queued_prompt_input import QueuedPromptInput
 from .renderer_helm import RendererHelm
 from .renderer_helm_input import RendererHelmInput
 from .scm_connection import ScmConnection
@@ -150,9 +152,13 @@ from .tag import Tag
 from .tag_input import TagInput
 from .user import User
 from .workbench import Workbench
+from .workbench_budget import WorkbenchBudget
+from .workbench_budget_unit import WorkbenchBudgetUnit
 from .workbench_job import WorkbenchJob
 from .workbench_job_coding_modes import WorkbenchJobCodingModes
 from .workbench_job_input import WorkbenchJobInput
+from .workbench_job_model import WorkbenchJobModel
+from .workbench_job_model_provider import WorkbenchJobModelProvider
 from .workbench_job_modes import WorkbenchJobModes
 from .workbench_job_result import WorkbenchJobResult
 from .workbench_job_result_metadata import WorkbenchJobResultMetadata
@@ -191,7 +197,6 @@ __all__ = (
     "ClusterUpgradeStep",
     "ClusterUpgradeStepStatus",
     "ClusterUpgradeStepType",
-    "ConsoleOpenAPIAccessTokenScope",
     "ConsoleOpenAPIAIAgentRunList",
     "ConsoleOpenAPIAIAgentRuntimeList",
     "ConsoleOpenAPIAIAgentSessionList",
@@ -199,6 +204,7 @@ __all__ = (
     "ConsoleOpenAPIAISentinelRunList",
     "ConsoleOpenAPIAIWorkbenchJobList",
     "ConsoleOpenAPIAIWorkbenchList",
+    "ConsoleOpenAPIAccessTokenScope",
     "ConsoleOpenAPICDClusterList",
     "ConsoleOpenAPICDGitRepositoryList",
     "ConsoleOpenAPICDGlobalServiceList",
@@ -217,11 +223,11 @@ __all__ = (
     "CreatePullRequestInput",
     "CreatePullRequestInputContext",
     "Git",
-    "GithubAppInput",
     "GitRepository",
     "GitRepositoryAuthMethod",
     "GitRepositoryHealth",
     "GitRepositoryInput",
+    "GithubAppInput",
     "GlobalService",
     "GlobalServiceDistro",
     "GlobalServiceInput",
@@ -265,6 +271,8 @@ __all__ = (
     "PromotionCriteria",
     "PullRequest",
     "PullRequestStatus",
+    "QueuedPrompt",
+    "QueuedPromptInput",
     "RendererHelm",
     "RendererHelmInput",
     "ScmConnection",
@@ -310,9 +318,13 @@ __all__ = (
     "TagInput",
     "User",
     "Workbench",
+    "WorkbenchBudget",
+    "WorkbenchBudgetUnit",
     "WorkbenchJob",
     "WorkbenchJobCodingModes",
     "WorkbenchJobInput",
+    "WorkbenchJobModel",
+    "WorkbenchJobModelProvider",
     "WorkbenchJobModes",
     "WorkbenchJobResult",
     "WorkbenchJobResultMetadata",

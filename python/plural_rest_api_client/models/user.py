@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
 
@@ -24,6 +25,7 @@ class User:
         email (str):
         id (str):
         inserted_at (datetime.datetime):
+        allowed_scopes (list[str] | Unset):
         roles (ConsoleOpenAPIUserRoles | Unset): The roles of the user
         service_account (bool | Unset):
         updated_at (datetime.datetime | Unset):
@@ -32,6 +34,7 @@ class User:
     email: str
     id: str
     inserted_at: datetime.datetime
+    allowed_scopes: list[str] | Unset = UNSET
     roles: ConsoleOpenAPIUserRoles | Unset = UNSET
     service_account: bool | Unset = UNSET
     updated_at: datetime.datetime | Unset = UNSET
@@ -43,6 +46,10 @@ class User:
         id = self.id
 
         inserted_at = self.inserted_at.isoformat()
+
+        allowed_scopes: list[str] | Unset = UNSET
+        if not isinstance(self.allowed_scopes, Unset):
+            allowed_scopes = self.allowed_scopes
 
         roles: dict[str, Any] | Unset = UNSET
         if not isinstance(self.roles, Unset):
@@ -63,6 +70,8 @@ class User:
                 "inserted_at": inserted_at,
             }
         )
+        if allowed_scopes is not UNSET:
+            field_dict["allowed_scopes"] = allowed_scopes
         if roles is not UNSET:
             field_dict["roles"] = roles
         if service_account is not UNSET:
@@ -73,8 +82,10 @@ class User:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.console_open_api_user_roles import ConsoleOpenAPIUserRoles
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.console_open_api_user_roles import (
+            ConsoleOpenAPIUserRoles,
+        )
 
         d = dict(src_dict)
         email = d.pop("email")
@@ -82,6 +93,8 @@ class User:
         id = d.pop("id")
 
         inserted_at = datetime.datetime.fromisoformat(d.pop("inserted_at"))
+
+        allowed_scopes = cast(list[str], d.pop("allowed_scopes", UNSET))
 
         _roles = d.pop("roles", UNSET)
         roles: ConsoleOpenAPIUserRoles | Unset
@@ -103,6 +116,7 @@ class User:
             email=email,
             id=id,
             inserted_at=inserted_at,
+            allowed_scopes=allowed_scopes,
             roles=roles,
             service_account=service_account,
             updated_at=updated_at,

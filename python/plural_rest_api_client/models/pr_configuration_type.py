@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class PrConfigurationType(str, Enum):
+class PrConfigurationType(StrEnum):
     BOOL = "bool"
     BUCKET = "bucket"
     CLUSTER = "cluster"

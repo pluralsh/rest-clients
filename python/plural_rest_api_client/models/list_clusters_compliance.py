@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ListClustersCompliance(str, Enum):
+class ListClustersCompliance(StrEnum):
     COMPLIANT = "compliant"
     LATEST = "latest"
     OUTDATED = "outdated"

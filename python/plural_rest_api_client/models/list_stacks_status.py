@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ListStacksStatus(str, Enum):
+class ListStacksStatus(StrEnum):
     CANCELLED = "cancelled"
     FAILED = "failed"
     PENDING = "pending"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class AgentSessionType(str, Enum):
+class AgentSessionType(StrEnum):
     CHAT = "chat"
     CONFIGURE = "configure"
     KUBERNETES = "kubernetes"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ListSentinelsStatus(str, Enum):
+class ListSentinelsStatus(StrEnum):
     FAILED = "failed"
     PENDING = "pending"
     SUCCESS = "success"

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ServiceRendererInputType(str, Enum):
+class ServiceRendererInputType(StrEnum):
     AUTO = "auto"
     HELM = "helm"
     KUSTOMIZE = "kustomize"
