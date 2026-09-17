@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class GitRepositoryHealth(str, Enum):
+class GitRepositoryHealth(StrEnum):
     FAILED = "failed"
     PULLABLE = "pullable"
 

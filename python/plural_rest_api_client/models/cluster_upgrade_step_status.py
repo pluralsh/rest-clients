@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ClusterUpgradeStepStatus(str, Enum):
+class ClusterUpgradeStepStatus(StrEnum):
     COMPLETED = "completed"
     FAILED = "failed"
     IN_PROGRESS = "in_progress"

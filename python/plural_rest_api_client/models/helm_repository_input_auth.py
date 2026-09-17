@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
 
@@ -76,8 +77,10 @@ class HelmRepositoryInputAuth:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.helm_repository_input_auth_aws import HelmRepositoryInputAuthAws
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.helm_repository_input_auth_aws import (
+            HelmRepositoryInputAuthAws,
+        )
         from ..models.helm_repository_input_auth_azure import (
             HelmRepositoryInputAuthAzure,
         )
@@ -87,7 +90,9 @@ class HelmRepositoryInputAuth:
         from ..models.helm_repository_input_auth_bearer import (
             HelmRepositoryInputAuthBearer,
         )
-        from ..models.helm_repository_input_auth_gcp import HelmRepositoryInputAuthGcp
+        from ..models.helm_repository_input_auth_gcp import (
+            HelmRepositoryInputAuthGcp,
+        )
 
         d = dict(src_dict)
         _aws = d.pop("aws", UNSET)
