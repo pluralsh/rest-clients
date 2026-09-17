@@ -6,6 +6,7 @@ from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..models.git_repository_auth_method import GitRepositoryAuthMethod
 from ..models.git_repository_health import GitRepositoryHealth
@@ -101,7 +102,7 @@ class GitRepository:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
         d = dict(src_dict)
         _auth_method = d.pop("auth_method", UNSET)
         auth_method: GitRepositoryAuthMethod | Unset

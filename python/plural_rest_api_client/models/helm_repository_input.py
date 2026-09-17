@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..models.helm_repository_input_provider import HelmRepositoryInputProvider
 from ..types import UNSET, Unset
@@ -55,8 +56,10 @@ class HelmRepositoryInput:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.helm_repository_input_auth import HelmRepositoryInputAuth
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.helm_repository_input_auth import (
+            HelmRepositoryInputAuth,
+        )
 
         d = dict(src_dict)
         _auth = d.pop("auth", UNSET)

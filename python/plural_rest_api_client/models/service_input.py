@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
 
@@ -126,12 +127,16 @@ class ServiceInput:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
         from ..models.git import Git
         from ..models.helm_spec_input import HelmSpecInput
         from ..models.kustomize_input import KustomizeInput
-        from ..models.service_configuration_input import ServiceConfigurationInput
-        from ..models.service_renderer_input import ServiceRendererInput
+        from ..models.service_configuration_input import (
+            ServiceConfigurationInput,
+        )
+        from ..models.service_renderer_input import (
+            ServiceRendererInput,
+        )
         from ..models.service_source_input import ServiceSourceInput
 
         d = dict(src_dict)

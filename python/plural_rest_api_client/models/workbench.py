@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.workbench_budget import WorkbenchBudget
+
 
 T = TypeVar("T", bound="Workbench")
 
@@ -18,6 +23,7 @@ class Workbench:
 
     Attributes:
         agent_runtime_id (str | Unset): ID of the agent runtime for this workbench
+        budget (WorkbenchBudget | Unset): Token bucket budget configuration and current state for a workbench
         description (str | Unset): Description of the workbench
         id (str | Unset): Unique identifier for the workbench
         inserted_at (datetime.datetime | Unset):
@@ -29,6 +35,7 @@ class Workbench:
     """
 
     agent_runtime_id: str | Unset = UNSET
+    budget: WorkbenchBudget | Unset = UNSET
     description: str | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
@@ -41,6 +48,10 @@ class Workbench:
 
     def to_dict(self) -> dict[str, Any]:
         agent_runtime_id = self.agent_runtime_id
+
+        budget: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.budget, Unset):
+            budget = self.budget.to_dict()
 
         description = self.description
 
@@ -67,6 +78,8 @@ class Workbench:
         field_dict.update({})
         if agent_runtime_id is not UNSET:
             field_dict["agent_runtime_id"] = agent_runtime_id
+        if budget is not UNSET:
+            field_dict["budget"] = budget
         if description is not UNSET:
             field_dict["description"] = description
         if id is not UNSET:
@@ -87,9 +100,18 @@ class Workbench:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.workbench_budget import WorkbenchBudget
+
         d = dict(src_dict)
         agent_runtime_id = d.pop("agent_runtime_id", UNSET)
+
+        _budget = d.pop("budget", UNSET)
+        budget: WorkbenchBudget | Unset
+        if isinstance(_budget, Unset):
+            budget = UNSET
+        else:
+            budget = WorkbenchBudget.from_dict(_budget)
 
         description = d.pop("description", UNSET)
 
@@ -119,6 +141,7 @@ class Workbench:
 
         workbench = cls(
             agent_runtime_id=agent_runtime_id,
+            budget=budget,
             description=description,
             id=id,
             inserted_at=inserted_at,

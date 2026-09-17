@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class SentinelCheckType(str, Enum):
+class SentinelCheckType(StrEnum):
     INTEGRATION_TEST = "integration_test"
     KUBERNETES = "kubernetes"
     LOG = "log"

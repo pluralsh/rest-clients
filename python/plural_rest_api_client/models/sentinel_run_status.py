@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class SentinelRunStatus(str, Enum):
+class SentinelRunStatus(StrEnum):
     FAILED = "failed"
     PENDING = "pending"
     SUCCESS = "success"

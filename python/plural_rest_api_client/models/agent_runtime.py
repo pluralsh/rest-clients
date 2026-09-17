@@ -2,13 +2,18 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..models.agent_runtime_type import AgentRuntimeType
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.workbench_job_model import WorkbenchJobModel
+
 
 T = TypeVar("T", bound="AgentRuntime")
 
@@ -24,6 +29,7 @@ class AgentRuntime:
         default (bool | Unset): Whether this is the default runtime for coding agents
         id (str | Unset): Unique identifier for the agent runtime
         inserted_at (datetime.datetime | Unset):
+        model (WorkbenchJobModel | Unset): Model override for a workbench job
         name (str | Unset): Human-readable name of this runtime
         type_ (AgentRuntimeType | Unset): Type of agent runtime (claude, opencode, gemini, custom)
         updated_at (datetime.datetime | Unset):
@@ -35,6 +41,7 @@ class AgentRuntime:
     default: bool | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
+    model: WorkbenchJobModel | Unset = UNSET
     name: str | Unset = UNSET
     type_: AgentRuntimeType | Unset = UNSET
     updated_at: datetime.datetime | Unset = UNSET
@@ -56,6 +63,10 @@ class AgentRuntime:
         inserted_at: str | Unset = UNSET
         if not isinstance(self.inserted_at, Unset):
             inserted_at = self.inserted_at.isoformat()
+
+        model: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.model, Unset):
+            model = self.model.to_dict()
 
         name = self.name
 
@@ -82,6 +93,8 @@ class AgentRuntime:
             field_dict["id"] = id
         if inserted_at is not UNSET:
             field_dict["inserted_at"] = inserted_at
+        if model is not UNSET:
+            field_dict["model"] = model
         if name is not UNSET:
             field_dict["name"] = name
         if type_ is not UNSET:
@@ -92,7 +105,9 @@ class AgentRuntime:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.workbench_job_model import WorkbenchJobModel
+
         d = dict(src_dict)
         ai_proxy = d.pop("ai_proxy", UNSET)
 
@@ -110,6 +125,13 @@ class AgentRuntime:
             inserted_at = UNSET
         else:
             inserted_at = datetime.datetime.fromisoformat(_inserted_at)
+
+        _model = d.pop("model", UNSET)
+        model: WorkbenchJobModel | Unset
+        if isinstance(_model, Unset):
+            model = UNSET
+        else:
+            model = WorkbenchJobModel.from_dict(_model)
 
         name = d.pop("name", UNSET)
 
@@ -134,6 +156,7 @@ class AgentRuntime:
             default=default,
             id=id,
             inserted_at=inserted_at,
+            model=model,
             name=name,
             type_=type_,
             updated_at=updated_at,

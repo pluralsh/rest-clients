@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class HelmRepositoryHealth(str, Enum):
+class HelmRepositoryHealth(StrEnum):
     FAILED = "failed"
     PULLABLE = "pullable"
 

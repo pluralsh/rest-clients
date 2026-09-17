@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from typing_extensions import Self
 
 from ..models.pr_configuration_type import PrConfigurationType
 from ..types import UNSET, Unset
@@ -86,8 +87,10 @@ class PrConfiguration:
         return field_dict
 
     @classmethod
-    def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.pr_configuration_validation import PrConfigurationValidation
+    def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
+        from ..models.pr_configuration_validation import (
+            PrConfigurationValidation,
+        )
 
         d = dict(src_dict)
         default = d.pop("default", UNSET)

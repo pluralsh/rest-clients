@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class AgentSessionInputType(str, Enum):
+class AgentSessionInputType(StrEnum):
     KUBERNETES = "kubernetes"
     TERRAFORM = "terraform"
 
