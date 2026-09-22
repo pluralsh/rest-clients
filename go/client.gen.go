@@ -732,6 +732,9 @@ type Cluster struct {
 	// Handle A short, unique human readable name used to identify this cluster
 	Handle *string `json:"handle,omitempty"`
 
+	// HealthScore The health score of this cluster from 0 to 100
+	HealthScore *int `json:"health_score,omitempty"`
+
 	// Id Unique identifier for the cluster
 	Id         *string    `json:"id,omitempty"`
 	InsertedAt *time.Time `json:"inserted_at,omitempty"`
@@ -2517,14 +2520,16 @@ type ListWorkbenchJobsParams struct {
 
 // ListClustersParams defines parameters for ListClusters.
 type ListClustersParams struct {
-	Q           *string                       `form:"q,omitempty" json:"q,omitempty"`
-	ProjectId   *string                       `form:"project_id,omitempty" json:"project_id,omitempty"`
-	Healthy     *bool                         `form:"healthy,omitempty" json:"healthy,omitempty"`
-	Tag         *string                       `form:"tag,omitempty" json:"tag,omitempty"`
-	Upgradeable *bool                         `form:"upgradeable,omitempty" json:"upgradeable,omitempty"`
-	Compliance  *ListClustersParamsCompliance `form:"compliance,omitempty" json:"compliance,omitempty"`
-	Page        *int                          `form:"page,omitempty" json:"page,omitempty"`
-	PerPage     *int                          `form:"per_page,omitempty" json:"per_page,omitempty"`
+	Q              *string                       `form:"q,omitempty" json:"q,omitempty"`
+	ProjectId      *string                       `form:"project_id,omitempty" json:"project_id,omitempty"`
+	Healthy        *bool                         `form:"healthy,omitempty" json:"healthy,omitempty"`
+	Tag            *string                       `form:"tag,omitempty" json:"tag,omitempty"`
+	Upgradeable    *bool                         `form:"upgradeable,omitempty" json:"upgradeable,omitempty"`
+	Compliance     *ListClustersParamsCompliance `form:"compliance,omitempty" json:"compliance,omitempty"`
+	MinHealthScore *int                          `form:"min_health_score,omitempty" json:"min_health_score,omitempty"`
+	MaxHealthScore *int                          `form:"max_health_score,omitempty" json:"max_health_score,omitempty"`
+	Page           *int                          `form:"page,omitempty" json:"page,omitempty"`
+	PerPage        *int                          `form:"per_page,omitempty" json:"per_page,omitempty"`
 }
 
 // ListClustersParamsCompliance defines parameters for ListClusters.
@@ -5716,6 +5721,38 @@ func NewListClustersRequest(server string, params *ListClustersParams) (*http.Re
 		if params.Compliance != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "compliance", runtime.ParamLocationQuery, *params.Compliance); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MinHealthScore != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "min_health_score", runtime.ParamLocationQuery, *params.MinHealthScore); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.MaxHealthScore != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "max_health_score", runtime.ParamLocationQuery, *params.MaxHealthScore); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

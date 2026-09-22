@@ -18,6 +18,8 @@ def _get_kwargs(
     tag: str | Unset = UNSET,
     upgradeable: bool | Unset = UNSET,
     compliance: ListClustersCompliance | Unset = UNSET,
+    min_health_score: int | Unset = UNSET,
+    max_health_score: int | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> dict[str, Any]:
@@ -39,6 +41,10 @@ def _get_kwargs(
         json_compliance = compliance.value
 
     params["compliance"] = json_compliance
+
+    params["min_health_score"] = min_health_score
+
+    params["max_health_score"] = max_health_score
 
     params["page"] = page
 
@@ -89,6 +95,8 @@ def sync_detailed(
     tag: str | Unset = UNSET,
     upgradeable: bool | Unset = UNSET,
     compliance: ListClustersCompliance | Unset = UNSET,
+    min_health_score: int | Unset = UNSET,
+    max_health_score: int | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> Response[ConsoleOpenAPICDClusterList]:
@@ -100,6 +108,8 @@ def sync_detailed(
         tag (str | Unset):
         upgradeable (bool | Unset):
         compliance (ListClustersCompliance | Unset):
+        min_health_score (int | Unset):
+        max_health_score (int | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -118,6 +128,8 @@ def sync_detailed(
         tag=tag,
         upgradeable=upgradeable,
         compliance=compliance,
+        min_health_score=min_health_score,
+        max_health_score=max_health_score,
         page=page,
         per_page=per_page,
     )
@@ -138,6 +150,8 @@ def sync(
     tag: str | Unset = UNSET,
     upgradeable: bool | Unset = UNSET,
     compliance: ListClustersCompliance | Unset = UNSET,
+    min_health_score: int | Unset = UNSET,
+    max_health_score: int | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> ConsoleOpenAPICDClusterList | None:
@@ -149,6 +163,8 @@ def sync(
         tag (str | Unset):
         upgradeable (bool | Unset):
         compliance (ListClustersCompliance | Unset):
+        min_health_score (int | Unset):
+        max_health_score (int | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -168,6 +184,8 @@ def sync(
         tag=tag,
         upgradeable=upgradeable,
         compliance=compliance,
+        min_health_score=min_health_score,
+        max_health_score=max_health_score,
         page=page,
         per_page=per_page,
     ).parsed
@@ -182,6 +200,8 @@ async def asyncio_detailed(
     tag: str | Unset = UNSET,
     upgradeable: bool | Unset = UNSET,
     compliance: ListClustersCompliance | Unset = UNSET,
+    min_health_score: int | Unset = UNSET,
+    max_health_score: int | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> Response[ConsoleOpenAPICDClusterList]:
@@ -193,6 +213,8 @@ async def asyncio_detailed(
         tag (str | Unset):
         upgradeable (bool | Unset):
         compliance (ListClustersCompliance | Unset):
+        min_health_score (int | Unset):
+        max_health_score (int | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -211,6 +233,8 @@ async def asyncio_detailed(
         tag=tag,
         upgradeable=upgradeable,
         compliance=compliance,
+        min_health_score=min_health_score,
+        max_health_score=max_health_score,
         page=page,
         per_page=per_page,
     )
@@ -229,6 +253,8 @@ async def asyncio(
     tag: str | Unset = UNSET,
     upgradeable: bool | Unset = UNSET,
     compliance: ListClustersCompliance | Unset = UNSET,
+    min_health_score: int | Unset = UNSET,
+    max_health_score: int | Unset = UNSET,
     page: int | Unset = UNSET,
     per_page: int | Unset = UNSET,
 ) -> ConsoleOpenAPICDClusterList | None:
@@ -240,6 +266,8 @@ async def asyncio(
         tag (str | Unset):
         upgradeable (bool | Unset):
         compliance (ListClustersCompliance | Unset):
+        min_health_score (int | Unset):
+        max_health_score (int | Unset):
         page (int | Unset):
         per_page (int | Unset):
 
@@ -260,6 +288,8 @@ async def asyncio(
             tag=tag,
             upgradeable=upgradeable,
             compliance=compliance,
+            min_health_score=min_health_score,
+            max_health_score=max_health_score,
             page=page,
             per_page=per_page,
         )
