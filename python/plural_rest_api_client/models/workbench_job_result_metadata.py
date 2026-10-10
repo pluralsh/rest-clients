@@ -45,9 +45,7 @@ class WorkbenchJobResultMetadata:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.workbench_job_result_metric import (
-            WorkbenchJobResultMetric,
-        )
+        from ..models.workbench_job_result_metric import WorkbenchJobResultMetric
 
         d = dict(src_dict)
         _metrics = d.pop("metrics", UNSET)

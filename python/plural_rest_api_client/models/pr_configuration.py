@@ -88,9 +88,7 @@ class PrConfiguration:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.pr_configuration_validation import (
-            PrConfigurationValidation,
-        )
+        from ..models.pr_configuration_validation import PrConfigurationValidation
 
         d = dict(src_dict)
         default = d.pop("default", UNSET)

@@ -83,9 +83,7 @@ class User:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.console_open_api_user_roles import (
-            ConsoleOpenAPIUserRoles,
-        )
+        from ..models.console_open_api_user_roles import ConsoleOpenAPIUserRoles
 
         d = dict(src_dict)
         email = d.pop("email")

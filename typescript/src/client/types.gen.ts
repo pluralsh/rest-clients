@@ -440,6 +440,10 @@ export type Cluster = {
      */
     handle?: string;
     /**
+     * The health score of this cluster from 0 to 100
+     */
+    health_score?: number;
+    /**
      * Unique identifier for the cluster
      */
     id?: string;
@@ -3150,6 +3154,8 @@ export type ListClustersData = {
         tag?: string;
         upgradeable?: boolean;
         compliance?: 'latest' | 'compliant' | 'outdated';
+        min_health_score?: number;
+        max_health_score?: number;
         page?: number;
         per_page?: number;
     };

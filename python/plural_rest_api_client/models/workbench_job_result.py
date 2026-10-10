@@ -108,12 +108,8 @@ class WorkbenchJobResult:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.workbench_job_result_metadata import (
-            WorkbenchJobResultMetadata,
-        )
-        from ..models.workbench_job_result_todo import (
-            WorkbenchJobResultTodo,
-        )
+        from ..models.workbench_job_result_metadata import WorkbenchJobResultMetadata
+        from ..models.workbench_job_result_todo import WorkbenchJobResultTodo
 
         d = dict(src_dict)
         conclusion = d.pop("conclusion", UNSET)

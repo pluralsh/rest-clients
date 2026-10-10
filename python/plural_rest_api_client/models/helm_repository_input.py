@@ -57,9 +57,7 @@ class HelmRepositoryInput:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.helm_repository_input_auth import (
-            HelmRepositoryInputAuth,
-        )
+        from ..models.helm_repository_input_auth import HelmRepositoryInputAuth
 
         d = dict(src_dict)
         _auth = d.pop("auth", UNSET)

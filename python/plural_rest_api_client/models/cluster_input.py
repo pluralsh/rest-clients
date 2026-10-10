@@ -72,9 +72,7 @@ class ClusterInput:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.cluster_input_metadata import (
-            ClusterInputMetadata,
-        )
+        from ..models.cluster_input_metadata import ClusterInputMetadata
         from ..models.tag_input import TagInput
 
         d = dict(src_dict)
