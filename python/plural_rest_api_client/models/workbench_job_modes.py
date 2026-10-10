@@ -63,9 +63,7 @@ class WorkbenchJobModes:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.workbench_job_coding_modes import (
-            WorkbenchJobCodingModes,
-        )
+        from ..models.workbench_job_coding_modes import WorkbenchJobCodingModes
         from ..models.workbench_job_model import WorkbenchJobModel
 
         d = dict(src_dict)

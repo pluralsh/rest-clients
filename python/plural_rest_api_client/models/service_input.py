@@ -131,12 +131,8 @@ class ServiceInput:
         from ..models.git import Git
         from ..models.helm_spec_input import HelmSpecInput
         from ..models.kustomize_input import KustomizeInput
-        from ..models.service_configuration_input import (
-            ServiceConfigurationInput,
-        )
-        from ..models.service_renderer_input import (
-            ServiceRendererInput,
-        )
+        from ..models.service_configuration_input import ServiceConfigurationInput
+        from ..models.service_renderer_input import ServiceRendererInput
         from ..models.service_source_input import ServiceSourceInput
 
         d = dict(src_dict)

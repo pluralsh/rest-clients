@@ -71,9 +71,7 @@ class PipelineContext:
 
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
-        from ..models.pipeline_context_context import (
-            PipelineContextContext,
-        )
+        from ..models.pipeline_context_context import PipelineContextContext
 
         d = dict(src_dict)
         _context = d.pop("context", UNSET)

@@ -33,6 +33,7 @@ class Cluster:
         distro (ClusterDistro | Unset): The distribution of kubernetes this cluster is running (generic, eks, aks, gke,
             rke, k3s, openshift)
         handle (str | Unset): A short, unique human readable name used to identify this cluster
+        health_score (int | Unset): The health score of this cluster from 0 to 100
         id (str | Unset): Unique identifier for the cluster
         inserted_at (datetime.datetime | Unset):
         installed (bool | Unset): Whether the deploy operator has been registered for this cluster
@@ -62,6 +63,7 @@ class Cluster:
     deleted_at: datetime.datetime | Unset = UNSET
     distro: ClusterDistro | Unset = UNSET
     handle: str | Unset = UNSET
+    health_score: int | Unset = UNSET
     id: str | Unset = UNSET
     inserted_at: datetime.datetime | Unset = UNSET
     installed: bool | Unset = UNSET
@@ -110,6 +112,8 @@ class Cluster:
             distro = self.distro.value
 
         handle = self.handle
+
+        health_score = self.health_score
 
         id = self.id
 
@@ -176,6 +180,8 @@ class Cluster:
             field_dict["distro"] = distro
         if handle is not UNSET:
             field_dict["handle"] = handle
+        if health_score is not UNSET:
+            field_dict["health_score"] = health_score
         if id is not UNSET:
             field_dict["id"] = id
         if inserted_at is not UNSET:
@@ -256,6 +262,8 @@ class Cluster:
 
         handle = d.pop("handle", UNSET)
 
+        health_score = d.pop("health_score", UNSET)
+
         id = d.pop("id", UNSET)
 
         _inserted_at = d.pop("inserted_at", UNSET)
@@ -323,6 +331,7 @@ class Cluster:
             deleted_at=deleted_at,
             distro=distro,
             handle=handle,
+            health_score=health_score,
             id=id,
             inserted_at=inserted_at,
             installed=installed,

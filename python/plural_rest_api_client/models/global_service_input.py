@@ -111,9 +111,7 @@ class GlobalServiceInput:
     @classmethod
     def from_dict(cls, src_dict: Mapping[str, Any]) -> Self:
         from ..models.cascade_input import CascadeInput
-        from ..models.service_template_input import (
-            ServiceTemplateInput,
-        )
+        from ..models.service_template_input import ServiceTemplateInput
         from ..models.tag_input import TagInput
 
         d = dict(src_dict)
